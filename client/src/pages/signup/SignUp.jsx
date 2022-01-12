@@ -52,7 +52,7 @@ const SignUp = (props)=>{
   };
 
   useEffect(() => {
-    if (props.alert_message !== null) {
+    if (props.alert_message !== null && props.alert_message!= undefined) {
       openNotification(props.alert_message.data);
      console.log(props.alert_message.data)
     }
@@ -94,8 +94,8 @@ const SignUp = (props)=>{
                   setPassword(e.target.value)                        
                   }} value={password} />
               <Button className="signupButton" type="primary" loading={loading} onClick={signUpMail}>Create an Account</Button>
-              <Link to="/">
-                  <p>Forgot password? Click here to reset.</p>
+              <Link to="/signin">
+                  <p>Already a user? Click here to login.</p>
               </Link>
           </div>
       </div>

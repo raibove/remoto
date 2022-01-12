@@ -71,12 +71,16 @@ router.post('/register', async (req, res) => {
     }
     if(!validPass) return res.status(400).send(d2)
 
-
+    
     //create and assign access token
     const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET)
-    res.header('AUTH_TOKEN', token).send(token)
+    let user_d = {
+        _id: user._id,
+        role: user.role,
+        token: token   
+    }
+    res.header('AUTH_TOKEN', token).send(user_d)
 
-    //res.send('logged in')
 })
 
 export default router

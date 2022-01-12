@@ -3,6 +3,7 @@ import './App.css';
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import SignUp from "./pages/signup/SignUp";
+import SignIn from "./pages/signin/SignIn";
 import Landing from "./pages/landing/Landing";
 
 import PrivateRoute from "./routes/PrivateRoute";
@@ -44,6 +45,7 @@ const App = (props)=>{
             <Route path="/" element={<Landing/>} exact />
           </Route>
           <Route path="/signup" element={<SignUp/>} exact />
+          <Route path="/signin" element={<SignIn/>} exact />
         </Routes>
       </Router>
     </div>
