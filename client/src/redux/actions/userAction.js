@@ -26,7 +26,7 @@ export const signup = (data) => async (dispatch) => {
         type: "SUCCESS_DATA",
         payload: "Login Success",
       });
-      localStorage.setItem("auth_ttoken", res.data.token);
+      localStorage.setItem("auth_token", res.data.token);
       return true;
     } catch (e) {
       let message = "Server error";

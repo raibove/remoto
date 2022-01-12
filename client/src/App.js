@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import SignUp from "./pages/signup/SignUp";
 import SignIn from "./pages/signin/SignIn";
 import Landing from "./pages/landing/Landing";
+import E404 from "./pages/error/E404";
 
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
@@ -42,10 +43,12 @@ const App = (props)=>{
         {/*  <Route path="/" element={PublicRoute(Landing)} exact />
         */}
           <Route element={<PublicRoute/>}>
-            <Route path="/" element={<Landing/>} exact />
+            <Route path="/" element={<Landing/>} exact />  
+            <Route path="/signup" element={<SignUp/>} exact />
+            <Route path="/signin" element={<SignIn/>} exact />
           </Route>
-          <Route path="/signup" element={<SignUp/>} exact />
-          <Route path="/signin" element={<SignIn/>} exact />
+          <Route path="*"element={<E404/>} />
+
         </Routes>
       </Router>
     </div>

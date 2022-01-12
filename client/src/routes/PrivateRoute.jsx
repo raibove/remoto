@@ -9,7 +9,7 @@ export default (Component) =>
     const baseURL = process.env.REACT_APP_BACKEND_URL;
     useEffect(() => {
       (async () => {
-        const tokenRes = localStorage.getItem("token");
+        const tokenRes = localStorage.getItem("auth_token");
         try {
           if (tokenRes) {
             const res = await axios.get(`${baseURL}/users/verify_token`);
