@@ -1,0 +1,100 @@
+.NavContainer{
+  display: flex;
+  background-color: #0C00E3;
+  height: 10vh;
+  justify-content: space-between;
+  color: #F1B7FF;
+}
+.Navbar{
+  height: 10vh;
+}
+.remoto-logo{
+  height: 10vh;
+}
+.right{
+  padding-right: 10vw;
+  font-size: 20px;
+}
+.nav{
+  padding: 0;
+  list-style: none;
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.nav-link{
+  color: inherit;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 15px;
+}
+
+.NavMenu{
+  display:none;
+}
+
+
+@media (max-width: 650px) {
+  
+  .NavContainer {
+    flex-direction: column;
+    transition: var(--globalTransition);
+    width: 100vw;
+    margin: 0;
+    z-index: 1000;
+  }
+  .NavContainer.active {
+    height: 100vh;
+  }
+  .NavContainer.active .left {
+    margin-top: 5px;
+    height: 4.5rem;
+  }
+  .left {
+    float: right;
+    height: 5vh;
+  }
+
+  .Navbar{
+    display: flex;
+    width: 100vw;
+  }
+  .NavMenu {
+    display: block;
+    float: right;
+    background-color: #0C00E3;
+    color: #F1B7FF;
+  }
+  .menuBar{
+    position: "absolute";
+    padding-top: 12px;
+    padding-right: 15px;
+    font-size: 22px;
+    z-index: 10;
+    float: right;
+  }
+  .right{
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--globalTransition) 2s;
+  }
+  
+  .right.active {
+    opacity: 1;
+    visibility: visible;
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    font-size: 18px;
+    justify-content: center;
+  }
+  .right.active ul {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    margin: 0;
+  }
+}

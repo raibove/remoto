@@ -1,0 +1,35 @@
+{
+  "name": "remoto",
+  "version": "1.0.0",
+  "description": "Employee onboarding platform",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "build": "cd client && yarn && yarn build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raibove/remoto.git"
+  },
+  "type": "module",
+  "author": "Shweta Kale",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/raibove/remoto/issues"
+  },
+  "homepage": "https://github.com/raibove/remoto#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "joi": "^17.5.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.1.0",
+    "nodemon": "^2.0.15",
+    "passport": "^0.5.0",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
+    "uuid": "^8.3.2"
+  }
+}
