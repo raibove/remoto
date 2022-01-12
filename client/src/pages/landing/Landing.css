@@ -1,0 +1,19 @@
+.LandingContainer{
+  background-color: #0C00E3;
+  display: flex;
+}
+
+.landingImage{
+    margin: 10vh 0 0 10vh;
+    width: 40vw;
+    height: 40vw;
+}
+.landingPara{
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin:0  105px;
+    font-size: 28px;
+    line-height: 52px;
+}
