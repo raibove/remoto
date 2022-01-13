@@ -47,7 +47,10 @@ const App = (props)=>{
             <Route path="/signup" element={<SignUp/>} exact />
             <Route path="/signin" element={<SignIn/>} exact />
           </Route>
-          <Route path="*"element={<E404/>} />
+          <Route element={<PrivateRoute/>}>
+            <Route path="/dashboard" element={<Landing/>} exact />  
+          </Route>
+          <Route path="*" element={<E404/>} />
 
         </Routes>
       </Router>
