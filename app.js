@@ -2,6 +2,8 @@ import cors from "cors";
 import mongoose from "mongoose";
 import express from "express";
 import { config } from "dotenv";
+import bodyParser from 'body-parser';
+
 config();
 
 const port = Number(process.env.PORT);
@@ -22,16 +24,35 @@ mongoose.connection.once("open", () =>
 
 const app = express();
 
+// create application/json parser
+var jsonParser = bodyParser.json()
+// create application/x-www-form-urlencoded parser
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
+ /*
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+*/
+
+app.use(cors());
+app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
+import employee from "./server/employee/employee.route.js"
+app.use('/api/users/', employee)
 
 // Import user route and create user route middelware
 import user from "./server/users/user.route.js"
-app.use('/api/user/', user)
+app.use('/api/users/', user)
 
+// dummysecure route
+/*
 import secureRoute from "./server/profile/profile.routes.js"
 app.use('/api/user/',secureRoute)
+*/
+// employee route
+
 // Handle errors.
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);

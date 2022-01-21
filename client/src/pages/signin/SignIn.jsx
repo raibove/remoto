@@ -25,9 +25,9 @@ const SignIn = (props)=>{
         //phone: "4454"
       };
       let chck = await props.signin(data);
-      console.log(chck)
+      //console.log(chck)
       /*if(chck !=undefined && chck)
-        window.location.href="/signup/verifymail"
+        window.location.href="/dashboard"
         */
     } catch (e) {
       console.log(e);

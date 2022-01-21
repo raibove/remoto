@@ -4,7 +4,7 @@ const baseURL = process.env.REACT_APP_BACKEND_URL;
 
 export const signup = (data) => async (dispatch) => {
     try {
-      const res = await axios.post(`${baseURL}/user/register`, data);
+      const res = await axios.post(`${baseURL}/users/register`, data);
       await dispatch({
         type: "SUCCESS_DATA",
         payload: "Account created Successfully",
@@ -21,12 +21,16 @@ export const signup = (data) => async (dispatch) => {
 
   export const signin = (data) => async (dispatch) => {
     try {
-      const res = await axios.post(`${baseURL}/user/login`, data);
+      const res = await axios.post(`${baseURL}/users/login`, data);
       await dispatch({
         type: "SUCCESS_DATA",
         payload: "Login Success",
       });
+      console.log(res)
+      console.log("rs")
       localStorage.setItem("auth_token", res.data.token);
+      localStorage.setItem("role", res.data.role)
+      window.location.href="/dashboard"
       return true;
     } catch (e) {
       let message = "Server error";
@@ -35,3 +39,43 @@ export const signup = (data) => async (dispatch) => {
       return false;
     }
   };
+
+export const verifyToken = ()=> async(dispatch) => {
+  try{
+    const res = await axios.get(`${baseURL}/users/verify_token`)
+    return res
+  }catch(err){
+   // window.location.href = "/signin";
+    dispatch({ type: "SET_ALERT", payload: { message: "Token validation failed"} });
+
+  }
+}
+export const signout = () => async (dispatch) => {
+  localStorage.removeItem("auth_token");
+  dispatch({ type: "SET_AUTH", payload: false });
+  window.location.href = "/";
+};
+
+export const getAllEmployee = ()=> async (dispatch)=>{
+  try{
+    const res = await axios.get(`${baseURL}/users/allemployee`)
+    console.log(res)
+    dispatch({type:"GET_ALL_EMPLOYEE", payload: {all_employee: res.data.all_employee}})
+  }catch(err){
+    dispatch({type:"SET_ALERT", payload: {message:"Failed to get Employee"}})
+  }
+}
+
+export const addEmployee = (data)=> async(dispatch)=>{
+  try{
+    const res = await axios.post(`${baseURL}/users/newemployee`,data)
+    console.log(res)
+    await dispatch({
+      type: "SUCCESS_DATA",
+      payload: "Employee Added",
+    });
+  }catch(err){
+    console.log(err)
+    dispatch({type:"SET_ALERT", payload: {message:err.response}})
+  }
+}

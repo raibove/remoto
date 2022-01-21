@@ -18,13 +18,14 @@ router.post('/register', async (req, res) => {
         }
         return res.status(400).send(d)
     }
-
+    console.log(error)
     //check if user with email exist
     const emailExist = await User.findOne({email: req.body.email})
     let d1 = {
         message: "email already exist"
     }
     if(emailExist) return res.status(400).send(d1)
+    console.log(emailExist)
     const user = new User({
         name: req.body.name,
         email: req.body.email,
@@ -79,6 +80,7 @@ router.post('/register', async (req, res) => {
         role: user.role,
         token: token   
     }
+    console.log(user_d)
     res.header('AUTH_TOKEN', token).send(user_d)
 
 })
