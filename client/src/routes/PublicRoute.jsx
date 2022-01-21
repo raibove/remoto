@@ -29,26 +29,7 @@ export default (Component) =>
   const PublicRoute = ()=>{
     
     const navigate = useNavigate();
-    //const [loading, setLoading] = useState(true);
-/*
-    useEffect(() => {
-      (async () => {
-        try {
-          const token = localStorage.getItem("token");
-          if (token) {
-            navigate("/dashboard");
-          }
-          setLoading(false);
-        } catch (e) {
-          console.log(e);
-          setLoading(false);
-        }
-      })();
-    }, []);
-    if (loading) {
-      return null;
-    }
-    */
+ 
     return <Outlet/>
   }
   export default PublicRoute

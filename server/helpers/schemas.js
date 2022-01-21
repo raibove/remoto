@@ -19,3 +19,16 @@ export const loginValidation = data => {
 
     return user_schema.validate(data)
 }
+
+export const employeeValidation = data => {
+    const employee_schema = Joi.object({
+        email: Joi.string().email().required(),
+        name: Joi.string().required(),
+        career: Joi.string().required(),
+        accepted: Joi.boolean(),
+        status: Joi.string(),
+        doj: Joi.date().required() 
+    })
+
+    return employee_schema.validate(data)
+}

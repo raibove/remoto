@@ -2,6 +2,7 @@ const initialState = {
     auth:false,
     alert_message: null,
     success_message: null,
+    all_employee: null
 }
 
 const userReducer = (state=initialState, action) => {
@@ -12,6 +13,8 @@ const userReducer = (state=initialState, action) => {
         return { ...state, alert_message: action.payload.message };  
         case "SUCCESS_DATA":
         return { ...state, success_message: action.payload };
+        case "GET_ALL_EMPLOYEE":
+        return {...state, all_employee: action.payload.all_employee}
       default:
       return state;
     }
