@@ -4,6 +4,7 @@ import {Table, Tag, Button} from "antd";
 import {Link} from "react-router-dom"
 import { signup, getAllEmployee } from "../../redux/actions/userAction";
 import { connect } from "react-redux";
+import xlsx from "xlsx"
 import store from "../../redux/store";
 import "./Dashboard.css"
 const {Column} = Table
@@ -18,6 +19,23 @@ const Dashboard = (props)=>{
             setEmpData(props.all_employee.documents)
         }
     },[props.all_employee])
+
+    const readUploadFile = (e) => {
+        e.preventDefault();
+        if (e.target.files) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const data = e.target.result;
+                const workbook = xlsx.read(data, { type: "array" });
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                const json = xlsx.utils.sheet_to_json(worksheet);
+                console.log(json);
+            };
+            reader.readAsArrayBuffer(e.target.files[0]);
+        }
+    }
+
     return(
         <>
         <SideBar/>
@@ -27,6 +45,12 @@ const Dashboard = (props)=>{
                 Add Employee
             </Button>
             </Link>
+            <input
+                type="file"
+                name="upload"
+                id="upload"
+                onChange={readUploadFile}
+            />
         <Table
             dataSource={empData}
             className="employee-table"

@@ -74,6 +74,25 @@ export const addEmployee = (data)=> async(dispatch)=>{
       type: "SUCCESS_DATA",
       payload: "Employee Added",
     });
+    await dispatch(getAllEmployee())
+  }catch(err){
+    console.log(err)
+    dispatch({type:"SET_ALERT", payload: {message:err.response}})
+  }
+}
+
+
+export const addMultipleEmployee = (data)=> async(dispatch)=>{
+  try{
+    console.log(data)
+
+    const res = await axios.post(`${baseURL}/users/multipleemployee`,data)
+    console.log(res)
+    await dispatch({
+      type: "SUCCESS_DATA",
+      payload: "Employee Added",
+    });
+    await dispatch(getAllEmployee())
   }catch(err){
     console.log(err)
     dispatch({type:"SET_ALERT", payload: {message:err.response}})

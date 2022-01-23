@@ -47,4 +47,39 @@ const employee_schema = new Schema(
     }
 )
 
+const pending_employee_schema = new Schema(
+    {
+        name: {
+            type: String,
+            required: true,
+        },
+        email: {
+            type: String,
+            required: true
+        },
+        career: {
+            type: String,
+            required: true,
+        },
+        doj:{
+            type:Date,
+            required: true
+        },
+        status:{
+            type: String,
+            default: "Offer Send"
+        },
+        accepted:{
+            type:Boolean,
+            default:false
+        },
+        error_msg:{
+            type:String
+        }
+    },
+    {
+        timestamps: true,
+    }
+)
 export const Employee = mongoose.model("Employee", employee_schema)
+export const PendingEmployee = mongoose.model("PendingEmployee", pending_employee_schema)
