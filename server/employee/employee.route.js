@@ -1,11 +1,35 @@
 import express, { request } from "express"
 import { authorize } from "../auth/auth.middleware.js";
 
-import { Employee } from "./employee.model.js";
-import {employeeValidation, registerValidation} from "../helpers/schemas.js"
-import { find_all_employee } from "./employee.service.js";
+import { Employee, PendingEmployee } from "./employee.model.js";
+import {employeeValidation, multipleemployeeValidation, mevalidation} from "../helpers/schemas.js"
+import { find_all_employee, find_pending_employee } from "./employee.service.js";
 
 const router = express.Router()
+
+const dd = [
+    {
+        name:"aaa",
+        email:"aab@gmail.com",
+        career:"aaa",
+        doj:1642870643  
+    },{
+        name:"bbb",
+        email:"bbb",
+        career:"aaa",
+        doj:1642870643  
+    },{
+        name:"",
+        email:"ccd@gmail.com",
+        career:"aaa",
+        doj:1642870643  
+    },{
+        name:"ddd",
+        email:"dde@gmail.com",
+        career:"aaa",
+        doj:1642870643  
+    }
+]
 
 router.post('/newemployee', async (req, res) => {
     console.log(req.body)
@@ -46,6 +70,7 @@ router.post('/newemployee', async (req, res) => {
 
  })
 
+
  router.get('/allemployee',  async(req,res) =>{
     let page = !req.query.page ? 1 : Number(req.query.page);
     let dpp = !req.query.dpp ? 20 : Number(req.query.dpp);
@@ -60,6 +85,54 @@ router.post('/newemployee', async (req, res) => {
         }
         res.status(400).send(d)
     }
-
  })
-export default router
+
+ 
+ router.get('/pendingemployee',  async(req,res) =>{
+    let page = !req.query.page ? 1 : Number(req.query.page);
+    let dpp = !req.query.dpp ? 20 : Number(req.query.dpp);
+    try{
+    let pending_employee = await find_pending_employee(page, dpp)
+    res.send({pending_employee: pending_employee})
+    //console.log(all_employee)
+    }catch(err){
+        console.log(err)
+        let d = {
+            message: err
+        }
+        res.status(400).send(d)
+    }
+ })
+
+ router.post('/multipleemployee', async(req,res) => {
+    let response = mevalidation(req.body)
+    //console.log(response)
+    //res.send(response)
+    let vldress = [], unvldress = []
+    console.log(response.valid)
+    console.log(response.invalid)
+   try{
+        if(response.valid.length!=0)
+            vldress = await Employee.insertMany(response.valid)
+        if(response.invalid.length!=0)
+            unvldress = await PendingEmployee.insertMany(response.invalid)
+    console.log(unvldress)
+    console.log(vldress)
+    
+    let data = {
+        valid: vldress,
+        unvalid: unvldress
+    }
+res.send(data)
+   }catch(err){
+     //  console.log(err.writeErrors)
+       //if(err.code===11000){
+         //  console.log("duplicate data present")
+           res.status(404).send({message:"duplicate data present"})
+       //}
+    //   res.status(404).send({message:"couldn't add Valid data"})
+   }
+ })
+
+
+ export default router

@@ -4,56 +4,35 @@ import {Table, Tag, Button} from "antd";
 import {Link} from "react-router-dom"
 import { signup, getAllEmployee } from "../../redux/actions/userAction";
 import { connect } from "react-redux";
+import xlsx from "xlsx"
 import store from "../../redux/store";
 import "./Dashboard.css"
 const {Column} = Table
 const Dashboard = (props)=>{
-    const [empData, setEmpData] = useState([]);
-
-    useEffect(()=>{
-        if(props.all_employee===null){
-            props.getAllEmployee()
-        }else{
-            console.log(props.all_employee)
-            setEmpData(props.all_employee.documents)
-        }
-    },[props.all_employee])
+   
     return(
         <>
         <SideBar/>
-        <div className="all-employee-container">
-            <Link to="/new-employee">
-            <Button type="primary" className="employee-add">
-                Add Employee
-            </Button>
-            </Link>
-        <Table
-            dataSource={empData}
-            className="employee-table"
-        >
-            <Column
-                title="Name"
-                dataIndex="name"
-                key="name"
-            />
-            <Column
-                title="Email"
-                dataIndex="email"
-                key="email"
-            />
-            <Column
-                title="Role"
-                dataIndex="career"
-                key="career"
-            />
-            <Column
-                title="Status"
-                dataIndex="status"
-                key="status"
-            />
-        </Table>
-        </div>
-        <div>
+        <div className="dashboard-container">
+            <div className="dashboad-card-container">
+                <div className="dashboard-card">
+                    <p>25</p>
+                    <p>Offers Send</p>
+                </div>
+                <div className="dashboard-card" style={{color:"#07FE5B"}}>
+                    <p>15</p>
+                    <p>Offers Accepted</p>
+                </div>
+                <div style={{color:"#CF2548"}}className="dashboard-card">
+                    <p>10</p>
+                    <p>Offers Rejected</p>
+                </div>
+            </div>
+            <div className="dashboard-stats-container">
+                <div>
+                    
+                </div>
+            </div>
         </div>
         </>
     )

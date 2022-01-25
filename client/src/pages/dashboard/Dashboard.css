@@ -1,20 +1,38 @@
-.all-employee-container{
-    margin:20px 100px;
+.dashboard-container{
+    background-color: #F4F4F4;
+    min-height: 100vh;
+    margin-left: 64px;
 }
 
-.employee-add{
-    background-color: #d839ff;
-    color:white;
-    margin: 15px;
-    border: #F1B7FF;
-    float: right;
+.dashboard-card{
+    background-color: white;
+    padding: 10px 45px;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    font-family: var(--Inter);
+    line-height: 35px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    min-width: 220px;
+    min-height: 120px;
+}
+.dashboard-card>p{
+    margin-bottom: 12px;
+}
+.dashboad-card-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
 }
 
-.employee-add:hover{
-    background-color: #F1B7FF;
-}
-
-.employee-table .ant-table-thead .ant-table-cell{
-    background-color: #d839ff;
-    color: white;
+.dashboard-stats-container{
+    background-color: white;
+    min-height: 430px;
+    margin: 45px;
+  
 }
