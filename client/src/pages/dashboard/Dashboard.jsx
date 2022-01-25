@@ -9,75 +9,30 @@ import store from "../../redux/store";
 import "./Dashboard.css"
 const {Column} = Table
 const Dashboard = (props)=>{
-    const [empData, setEmpData] = useState([]);
-
-    useEffect(()=>{
-        if(props.all_employee===null){
-            props.getAllEmployee()
-        }else{
-            console.log(props.all_employee)
-            setEmpData(props.all_employee.documents)
-        }
-    },[props.all_employee])
-
-    const readUploadFile = (e) => {
-        e.preventDefault();
-        if (e.target.files) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const data = e.target.result;
-                const workbook = xlsx.read(data, { type: "array" });
-                const sheetName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[sheetName];
-                const json = xlsx.utils.sheet_to_json(worksheet);
-                console.log(json);
-            };
-            reader.readAsArrayBuffer(e.target.files[0]);
-        }
-    }
-
+   
     return(
         <>
         <SideBar/>
-        <div className="all-employee-container">
-            <Link to="/new-employee">
-            <Button type="primary" className="employee-add">
-                Add Employee
-            </Button>
-            </Link>
-            <input
-                type="file"
-                name="upload"
-                id="upload"
-                onChange={readUploadFile}
-            />
-        <Table
-            dataSource={empData}
-            className="employee-table"
-        >
-            <Column
-                title="Name"
-                dataIndex="name"
-                key="name"
-            />
-            <Column
-                title="Email"
-                dataIndex="email"
-                key="email"
-            />
-            <Column
-                title="Role"
-                dataIndex="career"
-                key="career"
-            />
-            <Column
-                title="Status"
-                dataIndex="status"
-                key="status"
-            />
-        </Table>
-        </div>
-        <div>
+        <div className="dashboard-container">
+            <div className="dashboad-card-container">
+                <div className="dashboard-card">
+                    <p>25</p>
+                    <p>Offers Send</p>
+                </div>
+                <div className="dashboard-card" style={{color:"#07FE5B"}}>
+                    <p>15</p>
+                    <p>Offers Accepted</p>
+                </div>
+                <div style={{color:"#CF2548"}}className="dashboard-card">
+                    <p>10</p>
+                    <p>Offers Rejected</p>
+                </div>
+            </div>
+            <div className="dashboard-stats-container">
+                <div>
+                    
+                </div>
+            </div>
         </div>
         </>
     )
