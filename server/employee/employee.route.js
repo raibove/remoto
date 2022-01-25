@@ -3,7 +3,7 @@ import { authorize } from "../auth/auth.middleware.js";
 
 import { Employee, PendingEmployee } from "./employee.model.js";
 import {employeeValidation, multipleemployeeValidation, mevalidation} from "../helpers/schemas.js"
-import { find_all_employee } from "./employee.service.js";
+import { find_all_employee, find_pending_employee } from "./employee.service.js";
 
 const router = express.Router()
 
@@ -85,7 +85,23 @@ router.post('/newemployee', async (req, res) => {
         }
         res.status(400).send(d)
     }
+ })
 
+ 
+ router.get('/pendingemployee',  async(req,res) =>{
+    let page = !req.query.page ? 1 : Number(req.query.page);
+    let dpp = !req.query.dpp ? 20 : Number(req.query.dpp);
+    try{
+    let pending_employee = await find_pending_employee(page, dpp)
+    res.send({pending_employee: pending_employee})
+    //console.log(all_employee)
+    }catch(err){
+        console.log(err)
+        let d = {
+            message: err
+        }
+        res.status(400).send(d)
+    }
  })
 
  router.post('/multipleemployee', async(req,res) => {
@@ -93,9 +109,13 @@ router.post('/newemployee', async (req, res) => {
     //console.log(response)
     //res.send(response)
     let vldress = [], unvldress = []
+    console.log(response.valid)
+    console.log(response.invalid)
    try{
-    vldress = await Employee.insertMany(response.valid)
-    unvldress = await PendingEmployee.insertMany(response.invalid)
+        if(response.valid.length!=0)
+            vldress = await Employee.insertMany(response.valid)
+        if(response.invalid.length!=0)
+            unvldress = await PendingEmployee.insertMany(response.invalid)
     console.log(unvldress)
     console.log(vldress)
     
@@ -106,11 +126,11 @@ router.post('/newemployee', async (req, res) => {
 res.send(data)
    }catch(err){
      //  console.log(err.writeErrors)
-       if(err.code===11000){
-           console.log("duplicate data present")
+       //if(err.code===11000){
+         //  console.log("duplicate data present")
            res.status(404).send({message:"duplicate data present"})
-       }
-       res.status(404).send({message:"couldn't add Valid data"})
+       //}
+    //   res.status(404).send({message:"couldn't add Valid data"})
    }
  })
 

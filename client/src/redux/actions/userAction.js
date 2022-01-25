@@ -10,6 +10,7 @@ export const signup = (data) => async (dispatch) => {
         payload: "Account created Successfully",
       });
      // localStorage.setItem("dashboard_tour", false);
+     window.location="/dashboard"
       return true;
     } catch (e) {
       let message = "Server error";
@@ -61,8 +62,21 @@ export const getAllEmployee = ()=> async (dispatch)=>{
     const res = await axios.get(`${baseURL}/users/allemployee`)
     console.log(res)
     dispatch({type:"GET_ALL_EMPLOYEE", payload: {all_employee: res.data.all_employee}})
+    await dispatch(getPendingEmployee())
+
   }catch(err){
     dispatch({type:"SET_ALERT", payload: {message:"Failed to get Employee"}})
+  }
+}
+
+
+export const getPendingEmployee = ()=> async (dispatch)=>{
+  try{
+    const res = await axios.get(`${baseURL}/users/pendingemployee`)
+    console.log(res)
+    dispatch({type:"GET_PENDING_EMPLOYEE", payload: {pending_employee: res.data.pending_employee}})
+  }catch(err){
+    dispatch({type:"SET_ALERT", payload: {message:"Failed to get Pending Employee"}})
   }
 }
 
@@ -75,6 +89,7 @@ export const addEmployee = (data)=> async(dispatch)=>{
       payload: "Employee Added",
     });
     await dispatch(getAllEmployee())
+    await dispatch(getPendingEmployee())
   }catch(err){
     console.log(err)
     dispatch({type:"SET_ALERT", payload: {message:err.response}})
@@ -92,6 +107,7 @@ export const addMultipleEmployee = (data)=> async(dispatch)=>{
       type: "SUCCESS_DATA",
       payload: "Employee Added",
     });
+    await dispatch(getPendingEmployee())
     await dispatch(getAllEmployee())
   }catch(err){
     console.log(err)

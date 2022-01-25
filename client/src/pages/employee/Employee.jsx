@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react"
 import SideBar from "../../components/sidebar/SideBar"
 import {Table, Tag, Upload, Tabs, message, notification,Button} from "antd";
 import {Link} from "react-router-dom"
-import { signup, getAllEmployee,addMultipleEmployee } from "../../redux/actions/userAction";
+import { signup, getAllEmployee,addMultipleEmployee, getPendingEmployee } from "../../redux/actions/userAction";
 import { connect } from "react-redux";
 import xlsx from "xlsx"
 import store from "../../redux/store";
@@ -13,6 +13,20 @@ const {Column} = Table
 const { TabPane } = Tabs;
 const Employee = (props)=>{
     const [empData, setEmpData] = useState([]);
+    const [pendingEmpData, setPendingEmpData] = useState([])
+
+    
+    useEffect(()=>{
+        console.log("here")
+        if(props.pending_employee===null){
+            props.getPendingEmployee()
+        console.log("hereii")
+
+        }else{
+            console.log(props.pending_employee)
+            setPendingEmpData(props.pending_employee.documents)
+        }
+    },[props.pending_employee])
 
     useEffect(()=>{
         if(props.all_employee===null){
@@ -23,6 +37,7 @@ const Employee = (props)=>{
         }
     },[props.all_employee])
 
+   
     const close = () => {
         store.dispatch({ type: "SET_ALERT", payload: { message: null } });
       };
@@ -125,7 +140,36 @@ const Employee = (props)=>{
                 </Table>
                 </TabPane>
                 <TabPane tab="Pending" key="2">
-                Content of Tab Pane 2
+                <Table
+                    dataSource={pendingEmpData}
+                    className="employee-table"
+                >
+                    <Column
+                        title="Name"
+                        dataIndex="name"
+                        key="name"
+                    />
+                    <Column
+                        title="Email"
+                        dataIndex="email"
+                        key="email"
+                    />
+                    <Column
+                        title="Role"
+                        dataIndex="career"
+                        key="career"
+                    />
+                    <Column
+                        title="Status"
+                        dataIndex="status"
+                        key="status"
+                    />
+                     <Column
+                        title="Error"
+                        dataIndex="error_msg"
+                        key="error_msg"
+                    />
+                </Table>
                 </TabPane>
             </Tabs>
         </div>
@@ -138,13 +182,15 @@ const Employee = (props)=>{
 const mapActionWithProps = {
     signup,
     getAllEmployee,
-    addMultipleEmployee
+    addMultipleEmployee,
+    getPendingEmployee,
   };
   
   const mapPropsWithState = (state) => ({
     alert_message: state.user.alert_message,
     success_message: state.user.success_message,
     all_employee: state.user.all_employee,
+    pending_employee: state.user.pending_employee,
   });
   
   export default connect(mapPropsWithState, mapActionWithProps)(Employee);
