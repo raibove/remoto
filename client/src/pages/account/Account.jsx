@@ -7,11 +7,11 @@ import { connect } from "react-redux";
 import xlsx from "xlsx"
 import store from "../../redux/store";
 import { UploadOutlined } from '@ant-design/icons';
-import "./Employee.css"
+
 const {Column} = Table
 
 const { TabPane } = Tabs;
-const Employee = (props)=>{
+const Account = (props)=>{
     const [empData, setEmpData] = useState([]);
     const [pendingEmpData, setPendingEmpData] = useState([])
 
@@ -97,90 +97,22 @@ const Employee = (props)=>{
                 Add Employee
             </Button>
             </Link>
-            <div>
-            <label onChange={readUploadFile} htmlFor="formId">
-                <input
-                        type="file"
-                        accept=".xlsx, .xls, .csv" 
-                        id="formId" 
-                        name=""
-                        hidden 
-                    />
-                    <p  className="employee-upload"><UploadOutlined/> Upload file</p>
-            </label>
+            <Link to="/new-employee">
+            <Button type="primary" className="employee-add">
+                Add Employee
+            </Button>
+            </Link>
+            <Link to="/new-employee">
+            <Button type="primary" className="employee-add">
+                Add Employee
+            </Button>
+            </Link>
+            <Link to="/new-employee">
+            <Button type="primary" className="employee-add">
+                Add Employee
+            </Button>
+            </Link>
             </div>
-            </div>
-            <Tabs defaultActiveKey="1" style={{width:"100%"}}>
-                <TabPane tab="Employee" key="1">
-                <Table
-                    dataSource={empData}
-                    className="employee-table"
-                >
-                    <Column
-                        title="Name"
-                        dataIndex="name"
-                        key="name"
-                    />
-                    <Column
-                        title="Email"
-                        dataIndex="email"
-                        key="email"
-                    />
-                    <Column
-                        title="Role"
-                        dataIndex="career"
-                        key="career"
-                    />
-                    <Column
-                        title="Status"
-                        dataIndex="status"
-                        key="status"
-                    />
-                    <Column
-                        title=""
-                        dataIndex="_id"
-                        key="_id"
-                        render = {(_id)=>(
-                            <Link to={"/employee/"+_id}>
-                                View
-                            </Link>
-                        )}
-                    />
-                </Table>
-                </TabPane>
-                <TabPane tab="Pending" key="2">
-                <Table
-                    dataSource={pendingEmpData}
-                    className="employee-table"
-                >
-                    <Column
-                        title="Name"
-                        dataIndex="name"
-                        key="name"
-                    />
-                    <Column
-                        title="Email"
-                        dataIndex="email"
-                        key="email"
-                    />
-                    <Column
-                        title="Role"
-                        dataIndex="career"
-                        key="career"
-                    />
-                    <Column
-                        title="Status"
-                        dataIndex="status"
-                        key="status"
-                    />
-                     <Column
-                        title="Error"
-                        dataIndex="error_msg"
-                        key="error_msg"
-                    />
-                </Table>
-                </TabPane>
-            </Tabs>
         </div>
         <div>
         </div>
@@ -202,5 +134,5 @@ const mapActionWithProps = {
     pending_employee: state.user.pending_employee,
   });
   
-  export default connect(mapPropsWithState, mapActionWithProps)(Employee);
+  export default connect(mapPropsWithState, mapActionWithProps)(Account);
   

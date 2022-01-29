@@ -57,6 +57,17 @@ export const signout = () => async (dispatch) => {
   window.location.href = "/";
 };
 
+export const getEmployee = (id)=> async (dispatch)=>{
+  try{
+    const res = await axios.get(`${baseURL}/users/user/${id}`)
+    console.log(res)
+    dispatch({type:"GET_EMPLOYEE", payload: {employee: res.data.employee}})
+  }catch(err){
+    dispatch({type:"SET_ALERT", payload: {message:"Failed to get Employee"}})
+  }
+}
+
+
 export const getAllEmployee = ()=> async (dispatch)=>{
   try{
     const res = await axios.get(`${baseURL}/users/allemployee`)
@@ -90,6 +101,7 @@ export const addEmployee = (data)=> async(dispatch)=>{
     });
     await dispatch(getAllEmployee())
     await dispatch(getPendingEmployee())
+    window.location.href = "/employee"
   }catch(err){
     console.log(err)
     dispatch({type:"SET_ALERT", payload: {message:err.response}})
