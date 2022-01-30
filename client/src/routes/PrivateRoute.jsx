@@ -17,8 +17,8 @@ import { connect } from "react-redux";
               const res = await props.verifyToken();
               const { status } = res;
               console.log(status);
-              console.log("dd");
-              if (status !== 200 && !tokenRes) {
+              console.log(tokenRes);
+              if (status !== 200 || !tokenRes) {
                 navigate("/signin");
               }
             } else {

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react"
 import SideBar from "../../components/sidebar/SideBar"
-import {Table, Tag, Button} from "antd";
+import {Table, Tag, Button, notification} from "antd";
 import {Link} from "react-router-dom"
 import { signup, getAllEmployee } from "../../redux/actions/userAction";
 import { connect } from "react-redux";
@@ -19,6 +19,27 @@ const data = [
   ];
   
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+
+const close = () => {
+    store.dispatch({ type: "SET_ALERT", payload: { message: null } });
+  };
+
+  
+const openNotification = (err) => {
+  notification["error"]({
+    message: "Error in signup",
+    description: err.message,
+    onClose: close,
+  });
+};
+
+useEffect(() => {
+  if (props.alert_message !== null && props.alert_message!= undefined) {
+    openNotification(props.alert_message.data);
+   console.log(props.alert_message)
+  }
+}, [props.alert_message]);
+
 
     return(
         <>

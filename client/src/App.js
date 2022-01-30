@@ -14,11 +14,27 @@ import SingleEmployee from "./pages/employee/SingleEmployee"
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
 
+import api from "./shared/api"; 
 import { connect } from "react-redux";
 import store from "./redux/store";
 import { Alert } from "antd";
 
 const App = (props)=>{
+
+  useEffect(() => {
+    api();
+    /*(async () => {
+      try {
+        const role = localStorage.getItem("role");
+        setRole(role);
+      } catch (error) {
+        console.log(error);
+      }
+      setLoading(false);
+    })();
+    */
+  }, []);
+
   return(
     <div>
        {props.success_message !== null ? (
@@ -51,19 +67,11 @@ const App = (props)=>{
             <Route path="/signup" element={<SignUp/>} exact />
             <Route path="/signin" element={<SignIn/>} exact />
           </Route>
-          <Route element={<PublicRoute/>}>
+          <Route element={<PrivateRoute/>}>
             <Route path="/dashboard" element={<Dashboard/>} exact />  
-          </Route>
-          <Route element={<PublicRoute/>}>
             <Route path="/employee" element={<Employee/>} exact />  
-          </Route>
-          <Route element={<PublicRoute/>}>
             <Route path="/account" element={<Account/>} exact />  
-          </Route>
-          <Route element={<PublicRoute/>}>
             <Route path="/employee/:id" element={<SingleEmployee/>} exact />  
-          </Route>
-          <Route element={<PublicRoute/>}>
             <Route path="/new-employee" element={<NewEmployee/>} exact/>
           </Route>
           <Route path="*" element={<E404/>} />

@@ -47,8 +47,8 @@ export const verifyToken = ()=> async(dispatch) => {
     return res
   }catch(err){
    // window.location.href = "/signin";
-    dispatch({ type: "SET_ALERT", payload: { message: "Token validation failed"} });
-
+    dispatch({ type: "SET_ALERT", payload: { message: err.response} });
+    return err.response
   }
 }
 export const signout = () => async (dispatch) => {

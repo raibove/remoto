@@ -1,5 +1,6 @@
 import express, { request } from "express"
 const router = express.Router()
+import { authorize } from "../auth/auth.middleware.js";
 
 import { User } from "./user.model.js";
 import {registerValidation, loginValidation} from "../helpers/schemas.js"
@@ -84,6 +85,10 @@ router.post('/register', async (req, res) => {
     res.header('AUTH_TOKEN', token).send(user_d)
 
 })
+
+ router.get('/verify_token', authorize, async(req,res)=>{
+    res.send("verified")
+ })
 
 export default router
 
