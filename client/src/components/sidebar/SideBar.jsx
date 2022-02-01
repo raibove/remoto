@@ -42,7 +42,7 @@ const Siderbar = ({ signout }) => {
     <>
       {role === "admin" ? (
         <>
-           {width > 450 ? (
+           {width > 650 ? (
             <>
               <nav className="sidebar">
                 <ul className="sidebar-nav">
@@ -138,7 +138,35 @@ const Siderbar = ({ signout }) => {
                     <span className="link-text">Dashboard</span>
                   </NavLink>
                 </li>
-               
+                 {/* Employee */}
+                 <li className="side-item">
+                    <NavLink
+                      to="/employee"
+                      activeClassName="active-side-nav-link"
+                      className="side-link"
+                    >
+                      <PieChartTwoTone
+                        twoToneColor="#dd5dfd"
+                        style={{ fontSize: "1.5rem" }}
+                      />
+                      <span className="link-text">Employee</span>
+                    </NavLink>
+                  </li>
+                   {/* Account */}
+                   <li className="side-item">
+                    <NavLink
+                      to="/account"
+                      activeClassName="active-side-nav-link"
+                      className="side-link"
+                    >
+                      <PieChartTwoTone
+                        twoToneColor="#dd5dfd"
+                        style={{ fontSize: "1.5rem" }}
+                      />
+                      <span className="link-text">Account</span>
+                    </NavLink>
+                    </li>
+                  
                 {/* LOGOUT */}
                 <li
                   className="side-item"
@@ -155,7 +183,119 @@ const Siderbar = ({ signout }) => {
           )}
         </>
     ) : (
-          <></>
+      <>
+      {width > 650 ? (
+       <>
+         <nav className="sidebar">
+           <ul className="sidebar-nav">
+             <li className="logo">
+               <div className="logo-side-link">
+                 <span className="logo-link-text logo-text">Remoto</span>
+                 <RightCircleTwoTone
+                   twoToneColor="#dd5dfd"
+                   style={{ fontSize: "1.75rem" }}
+                 />
+               </div>
+             </li>
+             {/* DASHBOARD */}
+             <li className="side-item">
+               <NavLink
+                 to="/dashboard"
+                 activeClassName="active-side-nav-link"
+                 className="side-link"
+               >
+                 <PieChartTwoTone
+                   twoToneColor="#dd5dfd"
+                   style={{ fontSize: "1.5rem" }}
+                 />
+                 <span className="link-text">Dashboard</span>
+               </NavLink>
+             </li>
+             {/* Employee */}
+             <li className="side-item">
+               <NavLink
+                 to="/employee"
+                 activeClassName="active-side-nav-link"
+                 className="side-link"
+               >
+                 <PieChartTwoTone
+                   twoToneColor="#dd5dfd"
+                   style={{ fontSize: "1.5rem" }}
+                 />
+                 <span className="link-text">Employee</span>
+               </NavLink>
+             </li>
+              {/* Account */}
+              <li className="side-item">
+               <NavLink
+                 to="/account"
+                 activeClassName="active-side-nav-link"
+                 className="side-link"
+               >
+                 <PieChartTwoTone
+                   twoToneColor="#dd5dfd"
+                   style={{ fontSize: "1.5rem" }}
+                 />
+                 <span className="link-text">Account</span>
+               </NavLink>
+               </li>
+             
+             {/* LOGOUT */}
+             <li
+               className="side-item"
+               style={{ cursor: "pointer" }}
+               onClick={() => signout()}
+             >
+               <span className="side-link">
+                 <LogoutOutlined style={{ fontSize: "1.5rem" }} />
+                 <span className="link-text">SignOut</span>
+               </span>
+             </li>
+           </ul>
+         </nav>
+       </>
+     ) : (
+       <nav className="sidebar">
+         <ul className="sidebar-nav">
+           <li className="logo">
+             <div className="logo-side-link">
+               <span className="logo-link-text logo-text">Remoto</span>
+               <RightCircleTwoTone
+                 twoToneColor="#dd5dfd"
+                 style={{ fontSize: "1.75rem" }}
+               />
+             </div>
+           </li>
+           {/* DASHBOARD */}
+           <li className="side-item">
+             <NavLink
+               to="/dashboard"
+               activeClassName="active-side-nav-link"
+               className="side-link"
+             >
+               <PieChartTwoTone
+                 twoToneColor="#dd5dfd"
+                 style={{ fontSize: "1.5rem" }}
+               />
+               <span className="link-text">Dashboard</span>
+             </NavLink>
+           </li>
+          
+           {/* LOGOUT */}
+           <li
+             className="side-item"
+             style={{ cursor: "pointer" }}
+             onClick={() => signout()}
+           >
+             <span className="side-link">
+               <LogoutOutlined style={{ fontSize: "1.5rem" }} />
+               <span className="link-text">SignOut</span>
+             </span>
+           </li>
+         </ul>
+       </nav>
+     )}
+    </>
         )}
     </>
     );

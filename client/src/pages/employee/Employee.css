@@ -76,3 +76,18 @@
     min-height: 180px;
     flex: 1;
 }
+
+@media (max-width: 650px){
+    .single-employee-container{
+        margin-left: 0;
+        height: 100%;
+        padding-bottom: 100px;
+    }
+
+    .all-employee-container{
+        margin:0;
+    }
+    .employee-tab .ant-tabs-content-holder { 
+        overflow: scroll;
+    }
+}

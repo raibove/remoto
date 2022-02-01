@@ -110,7 +110,7 @@ const Employee = (props)=>{
             </label>
             </div>
             </div>
-            <Tabs defaultActiveKey="1" style={{width:"100%"}}>
+            <Tabs defaultActiveKey="1" style={{width:"100%"}} className="employee-tab">
                 <TabPane tab="Employee" key="1">
                 <Table
                     dataSource={empData}
