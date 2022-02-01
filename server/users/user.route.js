@@ -53,7 +53,6 @@ router.post('/register', async (req, res) => {
         message: "email already exist"
     }
     if(emailExist) return res.status(400).send(d1)
-    console.log(emailExist)
     const user = new User({
         name: req.body.name,
         email: req.body.email,
@@ -94,7 +93,7 @@ router.post('/register', async (req, res) => {
 
     // check if password is correct
     const validPass = await bcrypt.compare(req.body.password, user.password)
-    console.log(validPass)
+   
     let d2 = {
         message: 'invalid password'
     }
@@ -108,7 +107,6 @@ router.post('/register', async (req, res) => {
         role: user.role,
         token: token   
     }
-    console.log(user_d)
     res.header('AUTH_TOKEN', token).send(user_d)
 
 })
@@ -140,7 +138,6 @@ const randomPass = ()=>{
 router.post('/register_user/:id', async(req,res)=>{
 
     //  employee information
-    console.log(req.body)
     // check if account for employee is already created
     const emailExist = await User.findOne({email: req.body.email})
     if(emailExist) return res.status(400).send({
@@ -148,7 +145,6 @@ router.post('/register_user/:id', async(req,res)=>{
     })
 
     let password = randomPass()
-    //console.log(password)
     let role = "employee"
     const user = new User({
         name: req.body.name,
@@ -156,10 +152,8 @@ router.post('/register_user/:id', async(req,res)=>{
         password: password,
         role: role
     })
-    //console.log(user)
     try{
         const savedUser = await user.save()
-       // console.log(savedUser)
 
        let password_mail = {
         to: user.email, // Change to your recipient

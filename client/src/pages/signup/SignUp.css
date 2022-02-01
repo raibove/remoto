@@ -68,3 +68,12 @@
 .signupLogo{
     width: 130px;
 }
+
+@media (max-width: 650px){
+    .signup-left{
+        display: none;
+    }
+    .signup-right{
+        width: 100vw;
+    }
+}
