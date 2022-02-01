@@ -10,6 +10,7 @@ import Dashboard from "./pages/dashboard/Dashboard"
 import NewEmployee from "./pages/employee/NewEmployee"
 import Employee from "./pages/employee/Employee"
 import Account from "./pages/account/Account"
+import Letter from "./pages/letter/Letter"
 import SingleEmployee from "./pages/employee/SingleEmployee"
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
@@ -66,6 +67,7 @@ const App = (props)=>{
             <Route path="/" element={<Landing/>} exact />  
             <Route path="/signup" element={<SignUp/>} exact />
             <Route path="/signin" element={<SignIn/>} exact />
+            <Route path="/letter" element={<Letter/>} exact />
           </Route>
           <Route element={<PrivateRoute/>}>
             <Route path="/dashboard" element={<Dashboard/>} exact />  

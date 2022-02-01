@@ -35,7 +35,7 @@ const openNotification = (err) => {
 
 useEffect(() => {
   if (props.alert_message !== null && props.alert_message!= undefined) {
-    openNotification(props.alert_message.data);
+   openNotification(props.alert_message.data);
    console.log(props.alert_message)
   }
 }, [props.alert_message]);

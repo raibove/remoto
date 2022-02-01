@@ -69,7 +69,7 @@ const offerHtml = (emp)=>{
         </p>
     `
 }
-router.post('/newemployee', async (req, res) => {
+router.post('/newemployee', authorize, async (req, res) => {
     console.log(req.body)
     // Validate data from req.body
     const {error} = employeeValidation(req.body)
@@ -122,7 +122,7 @@ router.post('/newemployee', async (req, res) => {
  })
 
 
- router.get('/allemployee',  async(req,res) =>{
+ router.get('/allemployee', authorize, async(req,res) =>{
     let page = !req.query.page ? 1 : Number(req.query.page);
     let dpp = !req.query.dpp ? 20 : Number(req.query.dpp);
     try{
@@ -139,7 +139,7 @@ router.post('/newemployee', async (req, res) => {
  })
 
  
- router.get('/pendingemployee',  async(req,res) =>{
+ router.get('/pendingemployee', authorize, async(req,res) =>{
     let page = !req.query.page ? 1 : Number(req.query.page);
     let dpp = !req.query.dpp ? 20 : Number(req.query.dpp);
     try{
@@ -155,7 +155,7 @@ router.post('/newemployee', async (req, res) => {
     }
  })
 
- router.post('/multipleemployee', async(req,res) => {
+ router.post('/multipleemployee', authorize, async(req,res) => {
     let response = mevalidation(req.body)
     //console.log(response)
     //res.send(response)
@@ -185,7 +185,7 @@ res.send(data)
    }
  })
 
- router.get('/user/:id', async(req,res)=> {
+ router.get('/user/:id', authorize, async(req,res)=> {
     try{
         var user = await Employee.findById(req.params.id);
         if (!user) {
@@ -198,7 +198,7 @@ res.send(data)
  })
 
 
-  router.get('/mail', async(req,res)=> {
+  router.get('/mail', authorize, async(req,res)=> {
       let employee={
             name:"Shh",
             email:"infinityseekers101@gmail.com",
@@ -221,4 +221,15 @@ res.send(data)
     }    
  })
 
+ router.get('/letter/:id', async(req,res)=>{
+    try{
+        var user = await Employee.findById(req.params.id);
+        if (!user) {
+            throw "Can't find employee";
+        }
+        res.send({employee:user});
+    }catch(err){
+        res.status(400).send({message:err})
+    }   
+ })
  export default router
