@@ -1,49 +1,17 @@
 import express, { request } from "express"
-import { authorize } from "../auth/auth.middleware.js";
+import { authorize, is_admin } from "../auth/auth.middleware.js";
 
 import { Employee, PendingEmployee } from "./employee.model.js";
 import {employeeValidation, multipleemployeeValidation, mevalidation} from "../helpers/schemas.js"
 import { find_all_employee, find_pending_employee } from "./employee.service.js";
 import { config } from "dotenv";
-
-
-
 import sgMail from '@sendgrid/mail'
 config()
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-const msg = {
-  to: 'shweta.kale18@pccoepune.org', // Change to your recipient
-  from: 'shweta.kale18@pccoepune.org', // Change to your verified sender
-  subject: 'Sending with SendGrid is Fun',
-  text: 'and easy to do anywhere, even with Node.js',
-  html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-}
 
 const router = express.Router()
-const dd = [
-    {
-        name:"aaa",
-        email:"aab@gmail.com",
-        career:"aaa",
-        doj:1642870643  
-    },{
-        name:"bbb",
-        email:"bbb",
-        career:"aaa",
-        doj:1642870643  
-    },{
-        name:"",
-        email:"ccd@gmail.com",
-        career:"aaa",
-        doj:1642870643  
-    },{
-        name:"ddd",
-        email:"dde@gmail.com",
-        career:"aaa",
-        doj:1642870643  
-    }
-]
+
 
 const offerHtml = (emp)=>{
     return `
@@ -69,9 +37,9 @@ const offerHtml = (emp)=>{
         </p>
     `
 }
+
 router.post('/newemployee', authorize, async (req, res) => {
-    console.log(req.body)
-    // Validate data from req.body
+   // Validate data from req.body
     const {error} = employeeValidation(req.body)
     if(error){
         let d = {
@@ -86,8 +54,7 @@ router.post('/newemployee', authorize, async (req, res) => {
         message: "email already exist"
     }
     if(emailExist) return res.status(400).send(d1)
-    console.log(emailExist)
-    const employee = new Employee({
+   const employee = new Employee({
         name: req.body.name,
         email: req.body.email,
         password: req.body.password,
@@ -122,13 +89,12 @@ router.post('/newemployee', authorize, async (req, res) => {
  })
 
 
- router.get('/allemployee', authorize, async(req,res) =>{
+ router.get('/allemployee', authorize,is_admin, async(req,res) =>{
     let page = !req.query.page ? 1 : Number(req.query.page);
     let dpp = !req.query.dpp ? 20 : Number(req.query.dpp);
     try{
     let all_employee = await find_all_employee(page, dpp)
     res.send({all_employee: all_employee})
-    //console.log(all_employee)
     }catch(err){
         console.log(err)
         let d = {
@@ -145,7 +111,7 @@ router.post('/newemployee', authorize, async (req, res) => {
     try{
     let pending_employee = await find_pending_employee(page, dpp)
     res.send({pending_employee: pending_employee})
-    //console.log(all_employee)
+    
     }catch(err){
         console.log(err)
         let d = {
@@ -157,18 +123,14 @@ router.post('/newemployee', authorize, async (req, res) => {
 
  router.post('/multipleemployee', authorize, async(req,res) => {
     let response = mevalidation(req.body)
-    //console.log(response)
     //res.send(response)
     let vldress = [], unvldress = []
-    console.log(response.valid)
-    console.log(response.invalid)
+    
    try{
         if(response.valid.length!=0)
             vldress = await Employee.insertMany(response.valid)
         if(response.invalid.length!=0)
             unvldress = await PendingEmployee.insertMany(response.invalid)
-    console.log(unvldress)
-    console.log(vldress)
     
     let data = {
         valid: vldress,
@@ -197,30 +159,6 @@ res.send(data)
     }    
  })
 
-
-  router.get('/mail', authorize, async(req,res)=> {
-      let employee={
-            name:"Shh",
-            email:"infinityseekers101@gmail.com",
-            career:"aaa",
-            doj:1642870643  
-      }
-    try{
-        let single_offer_mail = {
-            to: employee.email, // Change to your recipient
-            from: 'shwetakale144@gmail.com', // Change to your verified sender
-            subject: 'Offer Letter for joining',
-            html: offerHtml(employee),          
-        }
-        sgMail.send(single_offer_mail)
-
-        //sgMail.send(msg)
-        res.send('Email sent');
-    }catch(err){
-        res.status(400).send({message:err})
-    }    
- })
-
  router.get('/letter/:id', async(req,res)=>{
     try{
         var user = await Employee.findById(req.params.id);
@@ -232,4 +170,5 @@ res.send(data)
         res.status(400).send({message:err})
     }   
  })
+
  export default router

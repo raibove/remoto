@@ -67,7 +67,7 @@ const App = (props)=>{
             <Route path="/" element={<Landing/>} exact />  
             <Route path="/signup" element={<SignUp/>} exact />
             <Route path="/signin" element={<SignIn/>} exact />
-            <Route path="/letter" element={<Letter/>} exact />
+            <Route path="/letter/:id" element={<Letter/>} exact />
           </Route>
           <Route element={<PrivateRoute/>}>
             <Route path="/dashboard" element={<Dashboard/>} exact />  

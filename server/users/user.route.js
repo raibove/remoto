@@ -141,7 +141,7 @@ router.post('/register_user/:id', async(req,res)=>{
     // check if account for employee is already created
     const emailExist = await User.findOne({email: req.body.email})
     if(emailExist) return res.status(400).send({
-        message: "Account already created"
+        message: "Offer letter signed and Account already created"
     })
 
     let password = randomPass()
@@ -155,7 +155,7 @@ router.post('/register_user/:id', async(req,res)=>{
     try{
         const savedUser = await user.save()
 
-       let password_mail = {
+    let password_mail = {
         to: user.email, // Change to your recipient
         from: 'shwetakale144@gmail.com', // Change to your verified sender
         subject: 'Password for website',

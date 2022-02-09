@@ -14,26 +14,26 @@ const Account = (props)=>{
         <>
         <SideBar/>
         <div className="account-microsoft-container">
-            <Link to="https://admin.microsoft.com/AdminPortal/Home?#/users/:/adduser">
+            <a href="https://admin.microsoft.com/AdminPortal/Home?#/users/:/adduser">
             <Button type="primary" className="account-microsoft-add">
                 Add a User
             </Button>
-            </Link>
-            <Link to="https://admin.microsoft.com/AdminPortal/Home?#/users/:/addmultipleusers">
+            </a>
+            <a href="https://admin.microsoft.com/AdminPortal/Home?#/users/:/addmultipleusers">
             <Button type="primary" className="account-microsoft-add">
                 Add Multiple User
             </Button>
-            </Link>
-            <Link to="https://account.activedirectory.windowsazure.com/UserManagement/MultifactorVerification.aspx?BrandContextID=O365">
+            </a>
+            <a href="https://account.activedirectory.windowsazure.com/UserManagement/MultifactorVerification.aspx?BrandContextID=O365">
             <Button type="primary" className="account-microsoft-add">
                 Add Multifactor Authentication
             </Button>
-            </Link>
-            <Link to="https://admin.microsoft.com/AdminPortal/Home?#/users/:/DeleteUser">
+            </a>
+            <a href="https://admin.microsoft.com/AdminPortal/Home?#/users/:/DeleteUser"   target="_blank" >
             <Button type="primary" className="account-microsoft-add">
                 Delete User
             </Button>
-            </Link>
+            </a>
         </div>
         <div>
         </div>

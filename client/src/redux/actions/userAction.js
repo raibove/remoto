@@ -109,7 +109,6 @@ export const addEmployee = (data)=> async(dispatch)=>{
   }
 }
 
-
 export const addMultipleEmployee = (data)=> async(dispatch)=>{
   try{
     console.log(data)
@@ -125,5 +124,32 @@ export const addMultipleEmployee = (data)=> async(dispatch)=>{
   }catch(err){
     console.log(err)
     dispatch({type:"SET_ALERT", payload: {message:err.response}})
+  }
+}
+
+export const getLetter = (id)=> async(dispatch)=>{
+  try{
+
+    let res = await axios.get(`${baseURL}/users/letter/${id}`)
+    console.log(res)
+    await dispatch({type: "GET_NEWJOINEE", payload: {newjoinee: res.data.employee}})
+  }catch(err){
+    console.log(err)
+    dispatch({type:"SET_ALERT", payload: {message:err.response}})
+  }
+}
+
+export const registerUser = (id, data)=> async(dispatch)=>{
+  try{
+    let res = await axios.post(`${baseURL}/users/register_user/${id}`, data)
+    console.log(res)
+    await dispatch({
+      type: "SUCCESS_DATA",
+      payload: "Account Created and credentials shared",
+    });
+  }catch(err){
+    console.log(err)
+    dispatch({type:"SET_ALERT", payload: {message:err.response}})
+  
   }
 }

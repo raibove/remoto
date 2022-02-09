@@ -87,7 +87,7 @@ const SignIn = (props)=>{
                   }
                 }}
               />
-              <Input placeholder="Password" bordered={false} className="signupInput"
+              <Input.Password placeholder="Password" bordered={false} className="signupInput"
                 onChange={(e)=>{
                   setPassword(e.target.value)                        
                 }} 
