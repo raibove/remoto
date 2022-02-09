@@ -166,7 +166,7 @@ router.post('/register_user/:id', async(req,res)=>{
 
     // update acceptance status in employee database
     let emppp = await Employee.findByIdAndUpdate(req.params.id, {accepted: true})
-    console.log(emppp)
+    //console.log(emppp)
     res.send({user: user._id})
     } catch(err){
         let d = {

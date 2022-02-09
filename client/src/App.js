@@ -7,6 +7,7 @@ import SignIn from "./pages/signin/SignIn";
 import Landing from "./pages/landing/Landing";
 import E404 from "./pages/error/E404";
 import Dashboard from "./pages/dashboard/Dashboard"
+import UserDashboard from "./pages/employeeDashboard/Dashboard"
 import NewEmployee from "./pages/employee/NewEmployee"
 import Employee from "./pages/employee/Employee"
 import Account from "./pages/account/Account"
@@ -21,19 +22,18 @@ import store from "./redux/store";
 import { Alert } from "antd";
 
 const App = (props)=>{
-
+  const [role, setRole] = useState("admin")
   useEffect(() => {
     api();
-    /*(async () => {
+    (async () => {
       try {
         const role = localStorage.getItem("role");
         setRole(role);
       } catch (error) {
         console.log(error);
       }
-      setLoading(false);
     })();
-    */
+    
   }, []);
 
   return(
@@ -69,6 +69,7 @@ const App = (props)=>{
             <Route path="/signin" element={<SignIn/>} exact />
             <Route path="/letter/:id" element={<Letter/>} exact />
           </Route>
+          {role === "admin"? 
           <Route element={<PrivateRoute/>}>
             <Route path="/dashboard" element={<Dashboard/>} exact />  
             <Route path="/employee" element={<Employee/>} exact />  
@@ -76,6 +77,12 @@ const App = (props)=>{
             <Route path="/employee/:id" element={<SingleEmployee/>} exact />  
             <Route path="/new-employee" element={<NewEmployee/>} exact/>
           </Route>
+          :
+          <Route element={<PrivateRoute/>}>
+            <Route path="/dashboard" element={<UserDashboard/>} exact />  
+           
+          </Route>
+          }
           <Route path="*" element={<E404/>} />
 
         </Routes>
