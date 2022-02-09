@@ -2,15 +2,24 @@ import React, {useEffect, useState} from "react"
 import { getLetter, registerUser} from "../../redux/actions/userAction";
 import { connect } from "react-redux";
 import {useParams} from "react-router-dom"
+import { Link, NavLink } from "react-router-dom";
 import store from "../../redux/store";
 import {Table, Spin,Tag, Button, Input, notification, Steps} from "antd";
 import "./Letter.css"
 const Letter = (props)=>{
     const [loading, setLoading] = useState(true)
+   /* const [newJoinee, setNewJoinee] = useState({
+      career:"",
+      name:"",
+      doj:null,
+      status:"",
+      accepted:"false"
+    })
+    */
     const [newJoinee, setNewJoinee] = useState(null)
     const [nName, setNName] = useState("")
     const [saveLoading, setSaveLoading] = useState(false)
-
+    
     let params = useParams();
 
     const close = () => {
@@ -33,14 +42,19 @@ const Letter = (props)=>{
     }, [props.alert_message]);
 
     useEffect(()=>{
+      ( async ()=>{
         if(props.newjoinee === null){
-            props.getLetter(params.id)
+            let result = await props.getLetter(params.id)
+            if(result === false){
+              setLoading(false)
+              }
         }else{
             let re = props.newjoinee
             console.log(re)
             setNewJoinee(re)
             setLoading(false)
         }
+      })()
     },[props.newjoinee])
 
     const timeConverter = (timeStamp)=>{
@@ -60,7 +74,6 @@ const Letter = (props)=>{
       if(nName.toLowerCase() != newJoinee.name.toLowerCase()){
         openNotification({message:"Name not same as official"})
       }else{
-        //alert("same")
         let data = {
           name: newJoinee.name,
           email: newJoinee.email
@@ -79,7 +92,19 @@ const Letter = (props)=>{
          <Spin/>
         </div>
          :
-        <div className="offer-letter-container">
+        <>
+        {
+          newJoinee===null?
+          <div className="offer-letter-container">
+            <h3>Error in getting data<br/> Please try again later</h3>
+          </div>:
+          <div>
+          {newJoinee.accepted === true? 
+            <div className="offer-letter-container">
+            <h3>Offer Letter signed<br/> To login click <Link to="/signin">here</Link></h3>
+          </div>:
+          
+          <div className="offer-letter-container">
             <div className="offer-letter">
                 <h1 className="offer-letter-heading">Offer Letter</h1>
                 <br/>
@@ -111,8 +136,12 @@ const Letter = (props)=>{
                 className="offer-req-input" value={nName} onChange={(e)=>{setNName(e.target.value)}} placeholder={newJoinee.name}/>
               <Button loading={saveLoading} className="letter-save" type="primary" onClick={()=>{saveLetter()}}>Save</Button>
             </div>
-        </div>
-         }
+          </div>
+          }
+          </div>
+          }
+        </>
+      }  
      </div>
     )
 }

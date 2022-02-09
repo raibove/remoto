@@ -1,7 +1,7 @@
 import express, { request } from "express"
 const router = express.Router()
 import { authorize } from "../auth/auth.middleware.js";
-//import { Employee, PendingEmployee } from "./employee.model.js";
+import { Employee, PendingEmployee } from "../employee/employee.model.js";
 import { User } from "./user.model.js";
 import {registerValidation, loginValidation} from "../helpers/schemas.js"
 
@@ -162,6 +162,11 @@ router.post('/register_user/:id', async(req,res)=>{
         html: passwordHtml(user,password),          
     }
     sgMail.send(password_mail)
+
+
+    // update acceptance status in employee database
+    let emppp = await Employee.findByIdAndUpdate(req.params.id, {accepted: true})
+    console.log(emppp)
     res.send({user: user._id})
     } catch(err){
         let d = {

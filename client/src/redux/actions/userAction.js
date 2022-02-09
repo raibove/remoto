@@ -133,9 +133,11 @@ export const getLetter = (id)=> async(dispatch)=>{
     let res = await axios.get(`${baseURL}/users/letter/${id}`)
     console.log(res)
     await dispatch({type: "GET_NEWJOINEE", payload: {newjoinee: res.data.employee}})
+    return true
   }catch(err){
     console.log(err)
     dispatch({type:"SET_ALERT", payload: {message:err.response}})
+    return false
   }
 }
 
@@ -147,6 +149,7 @@ export const registerUser = (id, data)=> async(dispatch)=>{
       type: "SUCCESS_DATA",
       payload: "Account Created and credentials shared",
     });
+    await dispatch(getLetter(id))
   }catch(err){
     console.log(err)
     dispatch({type:"SET_ALERT", payload: {message:err.response}})

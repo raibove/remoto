@@ -149,6 +149,8 @@ res.send(data)
 
  router.get('/user/:id', authorize, async(req,res)=> {
     try{
+        if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) 
+            throw "Not valid object id"
         var user = await Employee.findById(req.params.id);
         if (!user) {
             throw "Can't find employee";
@@ -161,12 +163,15 @@ res.send(data)
 
  router.get('/letter/:id', async(req,res)=>{
     try{
+        if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) 
+            throw "Not valid object id"
         var user = await Employee.findById(req.params.id);
         if (!user) {
             throw "Can't find employee";
         }
         res.send({employee:user});
     }catch(err){
+        console.log(err)
         res.status(400).send({message:err})
     }   
  })
