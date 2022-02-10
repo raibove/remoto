@@ -13,8 +13,10 @@ const Employee = (props)=>{
     const [empMail, setEmpMail] = useState("")
     const [empRole, setEmpRole] = useState("")
     const [empDoj, setEmpDoj] = useState("") 
+    const [empLoading, setEmpLoading] = useState(false)
 
     const onAddEmployee = async ()=>{
+      setEmpLoading(true)
       let data = {
         name: empName,
         email: empMail,
@@ -28,6 +30,7 @@ const Employee = (props)=>{
       }catch(e){
         console.log(e)
       }
+      setEmpLoading(false)
     }
 
     const close = () => {
@@ -84,7 +87,7 @@ const Employee = (props)=>{
             <h3>Date of Joining</h3>
             <DatePicker onChange={handleDateChange} format='DD/MM/YYYY'/>
           </div>
-          <Button type="primary" className="emp-button" onClick={onAddEmployee}>Add Employee</Button>
+          <Button type="primary" className="emp-button" loading={empLoading} onClick={onAddEmployee}>Add Employee</Button>
         </div>
         </div>
         </>

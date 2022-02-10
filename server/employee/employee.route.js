@@ -27,7 +27,7 @@ const offerHtml = (emp)=>{
          <br/><br/>
          As an employee of Company ABC, you will also have access to our comprehensive benefits program, 
          which includes unlimited vacation days, health insurance, RRSPs and tuition reimbursement.
-         To accept this offer, please email me at shwetakale144@gmail.com by ${emp.doj}, and I will get you started with the rest of the onboarding process.
+         To accept this offer, please add your signatur <a href="http://localhost:3000/letter/${emp._id}">here</a> by ${emp.doj}, and I will get you started with the rest of the onboarding process.
         <br/><br/>
         We are excited about the possibility of you joining Company ABC! <br/>
         If you have any questions, please contact me directly via phone or email.  
@@ -45,9 +45,9 @@ router.post('/newemployee', authorize, async (req, res) => {
         let d = {
             message: error.details[0].message
         }
+        //console.log("inn 50"+error)
         return res.status(400).send(d)
     }
-    console.log(error)
     //check if user with email exist
     const emailExist = await Employee.findOne({email: req.body.email})
     let d1 = {
@@ -63,7 +63,6 @@ router.post('/newemployee', authorize, async (req, res) => {
     })
 
     try{
-        const savedUser = await employee.save()
         let single_offer_mail = {
             to: employee.email, // Change to your recipient
             from: 'shwetakale144@gmail.com', // Change to your verified sender
@@ -71,13 +70,7 @@ router.post('/newemployee', authorize, async (req, res) => {
             html: offerHtml(employee),          
         }
         sgMail.send(single_offer_mail) 
-        .then(() => {
-            console.log('Email sent')
-          })
-          .catch((error) => {
-            console.error(error)
-          })
-
+        const savedUser = await employee.save()
         res.send({employee: employee._id})
     } catch(err){
         let d = {

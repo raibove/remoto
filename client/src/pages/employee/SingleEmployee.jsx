@@ -13,7 +13,7 @@ const { Step } = Steps;
 
 const SingleEmployee = (props)=>{
     const [emp,setEmp] = useState(null)
-
+    
     let params = useParams();
     const close = () => {
       store.dispatch({ type: "SET_ALERT", payload: { message: null } });
