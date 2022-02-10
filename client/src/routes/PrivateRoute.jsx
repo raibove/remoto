@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Outlet } from "react-router-dom";
 import axios from "axios";
-
+import api from "../shared/api"
 import { verifyToken } from "../redux/actions/userAction";
 import { connect } from "react-redux";
 
@@ -14,11 +14,12 @@ import { connect } from "react-redux";
           const tokenRes = localStorage.getItem("auth_token");
           try {
             if (tokenRes) {
+              api()
               const res = await props.verifyToken();
               const { status } = res;
               console.log(status);
-              console.log("dd");
-              if (status !== 200 && !tokenRes) {
+              console.log(tokenRes);
+              if (status !== 200) {
                 navigate("/signin");
               }
             } else {

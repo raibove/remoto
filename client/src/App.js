@@ -7,16 +7,35 @@ import SignIn from "./pages/signin/SignIn";
 import Landing from "./pages/landing/Landing";
 import E404 from "./pages/error/E404";
 import Dashboard from "./pages/dashboard/Dashboard"
+import UserDashboard from "./pages/employeeDashboard/Dashboard"
 import NewEmployee from "./pages/employee/NewEmployee"
 import Employee from "./pages/employee/Employee"
+import Account from "./pages/account/Account"
+import Letter from "./pages/letter/Letter"
+import SingleEmployee from "./pages/employee/SingleEmployee"
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
 
+import api from "./shared/api"; 
 import { connect } from "react-redux";
 import store from "./redux/store";
 import { Alert } from "antd";
 
 const App = (props)=>{
+  const [role, setRole] = useState("admin")
+  useEffect(() => {
+    api();
+    (async () => {
+      try {
+        const role = localStorage.getItem("role");
+        setRole(role);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+    
+  }, []);
+
   return(
     <div>
        {props.success_message !== null ? (
@@ -48,16 +67,22 @@ const App = (props)=>{
             <Route path="/" element={<Landing/>} exact />  
             <Route path="/signup" element={<SignUp/>} exact />
             <Route path="/signin" element={<SignIn/>} exact />
+            <Route path="/letter/:id" element={<Letter/>} exact />
           </Route>
-          <Route element={<PublicRoute/>}>
+          {role === "admin"? 
+          <Route element={<PrivateRoute/>}>
             <Route path="/dashboard" element={<Dashboard/>} exact />  
-          </Route>
-          <Route element={<PublicRoute/>}>
             <Route path="/employee" element={<Employee/>} exact />  
-          </Route>
-          <Route element={<PublicRoute/>}>
+            <Route path="/account" element={<Account/>} exact />  
+            <Route path="/employee/:id" element={<SingleEmployee/>} exact />  
             <Route path="/new-employee" element={<NewEmployee/>} exact/>
           </Route>
+          :
+          <Route element={<PrivateRoute/>}>
+            <Route path="/dashboard" element={<UserDashboard/>} exact />  
+           
+          </Route>
+          }
           <Route path="*" element={<E404/>} />
 
         </Routes>

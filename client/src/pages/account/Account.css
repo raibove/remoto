@@ -1,0 +1,18 @@
+.account-microsoft-container{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    margin-left: 64px;
+    margin-top: 20vh;
+    align-items: center;
+    gap:25px;
+}
+
+.account-microsoft-add{
+    background-color: #d839ff;
+    color:white;
+    font-size: 20px;
+    min-width: 350px;
+    height: 45px;
+    border: #F1B7FF;
+}

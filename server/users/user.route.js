@@ -1,12 +1,40 @@
 import express, { request } from "express"
 const router = express.Router()
-
+import { authorize } from "../auth/auth.middleware.js";
+import { Employee, PendingEmployee } from "../employee/employee.model.js";
 import { User } from "./user.model.js";
 import {registerValidation, loginValidation} from "../helpers/schemas.js"
 
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { config } from "dotenv";
+import sgMail from '@sendgrid/mail'
+config()
 
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+
+
+const passwordHtml = (emp, password)=>{
+    return `
+        <p>Dear ${emp.name},</p>
+        <br/>
+        <p>
+        We are excited to have you onboard. We have created an account for you on our onboarding portal. 
+        <br/> The credentials for the same are as follows:
+        <br/> <br/>
+        Website: http://localhost:3000/signin
+        <br/>
+        Username: ${emp.email}
+        <br/>
+        Password: ${password}
+        <br/><br/>
+        If you have any questions, please contact me directly via phone or email.  
+        <br/><br/>
+        Sincerely,<br/>
+        Hiring Manager,
+        </p>
+    `
+}
 router.post('/register', async (req, res) => {
     //res.send('Register')
 
@@ -25,7 +53,6 @@ router.post('/register', async (req, res) => {
         message: "email already exist"
     }
     if(emailExist) return res.status(400).send(d1)
-    console.log(emailExist)
     const user = new User({
         name: req.body.name,
         email: req.body.email,
@@ -66,7 +93,7 @@ router.post('/register', async (req, res) => {
 
     // check if password is correct
     const validPass = await bcrypt.compare(req.body.password, user.password)
-    console.log(validPass)
+   
     let d2 = {
         message: 'invalid password'
     }
@@ -80,10 +107,74 @@ router.post('/register', async (req, res) => {
         role: user.role,
         token: token   
     }
-    console.log(user_d)
     res.header('AUTH_TOKEN', token).send(user_d)
 
 })
 
+ router.get('/verify_token', authorize, async(req,res)=>{
+    res.send("verified")
+ })
+/*
+ router.put('/reset_password', async(req,res)=>{
+     try{
+        
+     }catch(err){
+
+     }
+ })
+*/
+
+const randomPass = ()=>{
+    var chars = "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    var passwordLength = 5;
+    var password = "";
+    for (var i = 0; i <= passwordLength; i++) {
+        var randomNumber = Math.floor(Math.random() * chars.length);
+        password += chars.substring(randomNumber, randomNumber +1);
+    }
+    return password
+}
+
+router.post('/register_user/:id', async(req,res)=>{
+
+    //  employee information
+    // check if account for employee is already created
+    const emailExist = await User.findOne({email: req.body.email})
+    if(emailExist) return res.status(400).send({
+        message: "Offer letter signed and Account already created"
+    })
+
+    let password = randomPass()
+    let role = "employee"
+    const user = new User({
+        name: req.body.name,
+        email: req.body.email,
+        password: password,
+        role: role
+    })
+    try{
+        const savedUser = await user.save()
+
+    let password_mail = {
+        to: user.email, // Change to your recipient
+        from: 'shwetakale144@gmail.com', // Change to your verified sender
+        subject: 'Password for website',
+        html: passwordHtml(user,password),          
+    }
+    sgMail.send(password_mail)
+
+
+    // update acceptance status in employee database
+    let emppp = await Employee.findByIdAndUpdate(req.params.id, {accepted: true})
+    //console.log(emppp)
+    res.send({user: user._id})
+    } catch(err){
+        let d = {
+            message: err
+        }
+        res.status(400).send(d)
+    }
+
+})
 export default router
 

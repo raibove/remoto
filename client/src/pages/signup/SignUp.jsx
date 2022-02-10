@@ -83,16 +83,37 @@ const SignUp = (props)=>{
               <Input placeholder="Full Name" bordered={false} 
                   onChange={(e)=>{
                       setName(e.target.value)                        
-                  }} value={name} className="signupInput"/>
+                  }} 
+                value={name} 
+                className="signupInput"
+                onKeyDown={(e) => {
+                  if (e.keyCode === 13) {
+                    signUpMail();
+                  }
+                }}
+              />
               <Input placeholder="Email" bordered={false} className="signupInput"
                 onChange={(e)=>{
                   setEmail(e.target.value)                        
-                  }} value={email} 
+                  }} 
+                value={email} 
+                onKeyDown={(e) => {
+                  if (e.keyCode === 13) {
+                    signUpMail();
+                  }
+                }}
               />
-              <Input placeholder="Password" bordered={false} className="signupInput"
+              <Input.Password placeholder="Password" bordered={false} className="signupInput"
                 onChange={(e)=>{
                   setPassword(e.target.value)                        
-                  }} value={password} />
+                  }} 
+                value={password} 
+                onKeyDown={(e) => {
+                  if (e.keyCode === 13) {
+                    signUpMail();
+                  }
+                }}
+              />
               <Button className="signupButton" type="primary" loading={loading} onClick={signUpMail}>Create an Account</Button>
               <Link to="/signin">
                   <p>Already a user? Click here to login.</p>

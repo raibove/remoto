@@ -21,7 +21,6 @@ const Employee = (props)=>{
         if(props.pending_employee===null){
             props.getPendingEmployee()
         console.log("hereii")
-
         }else{
             console.log(props.pending_employee)
             setPendingEmpData(props.pending_employee.documents)
@@ -111,7 +110,7 @@ const Employee = (props)=>{
             </label>
             </div>
             </div>
-            <Tabs defaultActiveKey="1" style={{width:"100%"}}>
+            <Tabs defaultActiveKey="1" style={{width:"100%"}} className="employee-tab">
                 <TabPane tab="Employee" key="1">
                 <Table
                     dataSource={empData}
@@ -136,6 +135,16 @@ const Employee = (props)=>{
                         title="Status"
                         dataIndex="status"
                         key="status"
+                    />
+                    <Column
+                        title=""
+                        dataIndex="_id"
+                        key="_id"
+                        render = {(_id)=>(
+                            <Link to={"/employee/"+_id}>
+                                View
+                            </Link>
+                        )}
                     />
                 </Table>
                 </TabPane>

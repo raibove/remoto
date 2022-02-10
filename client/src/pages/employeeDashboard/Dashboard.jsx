@@ -9,16 +9,7 @@ import store from "../../redux/store";
 import "./Dashboard.css"
 import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from 'recharts';
 
-const Dashboard = (props)=>{
-   
-const data = [
-    { name: 'Group A', value: 400 },
-    { name: 'Group B', value: 300 },
-    { name: 'Group C', value: 300 },
-    { name: 'Group D', value: 200 },
-  ];
-  
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+const UserDashboard = (props)=>{
 
 const close = () => {
     store.dispatch({ type: "SET_ALERT", payload: { message: null } });
@@ -59,15 +50,7 @@ useEffect(() => {
                     <p>Offers Rejected</p>
                 </div>
             </div>
-            <div className="dashboard-stats-container">
-                <div>
-                <PieChart width={400} height={400}>
-        
-                <Pie data={data} dataKey="value" cx="50%" cy="50%" outerRadius={60} fill="#8884d8" />
-                </PieChart >
-          
-                </div>
-            </div>
+           
         </div>
         </>
     )
@@ -84,5 +67,5 @@ const mapActionWithProps = {
     all_employee: state.user.all_employee,
   });
   
-  export default connect(mapPropsWithState, mapActionWithProps)(Dashboard);
+  export default connect(mapPropsWithState, mapActionWithProps)(UserDashboard);
   

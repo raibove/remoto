@@ -1,4 +1,5 @@
 import axios from "axios";
+import api from "../../shared/api"
 const baseURL = process.env.REACT_APP_BACKEND_URL;
 
 
@@ -47,8 +48,8 @@ export const verifyToken = ()=> async(dispatch) => {
     return res
   }catch(err){
    // window.location.href = "/signin";
-    dispatch({ type: "SET_ALERT", payload: { message: "Token validation failed"} });
-
+    dispatch({ type: "SET_ALERT", payload: { message: err.response} });
+    return err.response
   }
 }
 export const signout = () => async (dispatch) => {
@@ -56,6 +57,17 @@ export const signout = () => async (dispatch) => {
   dispatch({ type: "SET_AUTH", payload: false });
   window.location.href = "/";
 };
+
+export const getEmployee = (id)=> async (dispatch)=>{
+  try{
+    const res = await axios.get(`${baseURL}/users/user/${id}`)
+    console.log(res)
+    dispatch({type:"GET_EMPLOYEE", payload: {employee: res.data.employee}})
+  }catch(err){
+    dispatch({type:"SET_ALERT", payload: {message:"Failed to get Employee"}})
+  }
+}
+
 
 export const getAllEmployee = ()=> async (dispatch)=>{
   try{
@@ -90,12 +102,12 @@ export const addEmployee = (data)=> async(dispatch)=>{
     });
     await dispatch(getAllEmployee())
     await dispatch(getPendingEmployee())
+    window.location.href = "/employee"
   }catch(err){
     console.log(err)
     dispatch({type:"SET_ALERT", payload: {message:err.response}})
   }
 }
-
 
 export const addMultipleEmployee = (data)=> async(dispatch)=>{
   try{
@@ -112,5 +124,35 @@ export const addMultipleEmployee = (data)=> async(dispatch)=>{
   }catch(err){
     console.log(err)
     dispatch({type:"SET_ALERT", payload: {message:err.response}})
+  }
+}
+
+export const getLetter = (id)=> async(dispatch)=>{
+  try{
+
+    let res = await axios.get(`${baseURL}/users/letter/${id}`)
+    console.log(res)
+    await dispatch({type: "GET_NEWJOINEE", payload: {newjoinee: res.data.employee}})
+    return true
+  }catch(err){
+    console.log(err)
+    dispatch({type:"SET_ALERT", payload: {message:err.response}})
+    return false
+  }
+}
+
+export const registerUser = (id, data)=> async(dispatch)=>{
+  try{
+    let res = await axios.post(`${baseURL}/users/register_user/${id}`, data)
+    console.log(res)
+    await dispatch({
+      type: "SUCCESS_DATA",
+      payload: "Account Created and credentials shared",
+    });
+    await dispatch(getLetter(id))
+  }catch(err){
+    console.log(err)
+    dispatch({type:"SET_ALERT", payload: {message:err.response}})
+  
   }
 }

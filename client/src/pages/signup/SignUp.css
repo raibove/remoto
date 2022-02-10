@@ -26,6 +26,7 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    padding: 100px;
 }
 .signup-para{
     color:white;
@@ -43,8 +44,8 @@
     right: -20px;
 }
 
-.signupInput.ant-input{
-    width:150px;
+.signupInput.ant-input, .signupInput.ant-input-password{
+    width:170px;
     font-size: 15px;
     margin: 5px;
     border-bottom: 1px solid rgb(187, 186, 186);
@@ -67,4 +68,13 @@
 }
 .signupLogo{
     width: 130px;
+}
+
+@media (max-width: 650px){
+    .signup-left{
+        display: none;
+    }
+    .signup-right{
+        width: 100vw;
+    }
 }

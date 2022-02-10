@@ -79,12 +79,25 @@ const SignIn = (props)=>{
               <Input placeholder="Email" bordered={false} className="signupInput"
                 onChange={(e)=>{
                   setEmail(e.target.value)                        
-                  }} value={email} 
+                }} 
+                value={email} 
+                onKeyDown={(e) => {
+                  if (e.keyCode === 13) {
+                    signInMail();
+                  }
+                }}
               />
-              <Input placeholder="Password" bordered={false} className="signupInput"
+              <Input.Password placeholder="Password" bordered={false} className="signupInput"
                 onChange={(e)=>{
                   setPassword(e.target.value)                        
-                  }} value={password} />
+                }} 
+                value={password} 
+                onKeyDown={(e) => {
+                  if (e.keyCode === 13) {
+                    signInMail();
+                  }
+                }}
+              />
               <Button className="signupButton" type="primary" loading={loading} onClick={signInMail}>Login to Account</Button>
               <Link to="/">
                   <p>Forgot password? Click here to reset.</p>
