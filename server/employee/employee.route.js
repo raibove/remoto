@@ -6,6 +6,16 @@ import {employeeValidation, multipleemployeeValidation, mevalidation} from "../h
 import { find_all_employee, find_pending_employee } from "./employee.service.js";
 import { config } from "dotenv";
 import sgMail from '@sendgrid/mail'
+
+
+import fs from 'fs';
+import util from 'util';
+import { uploadFile, getFileStream} from '../s3upload/s3.js';
+import multer from 'multer';
+
+const unlinkFile = util.promisify(fs.unlink)
+const upload = multer({ dest: 'uploads/' })
+
 config()
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
@@ -104,7 +114,6 @@ router.post('/newemployee', authorize, async (req, res) => {
     try{
     let pending_employee = await find_pending_employee(page, dpp)
     res.send({pending_employee: pending_employee})
-    
     }catch(err){
         console.log(err)
         let d = {
@@ -114,29 +123,38 @@ router.post('/newemployee', authorize, async (req, res) => {
     }
  })
 
+router.get('/pendingemployee/:id', authorize, async(req,res) => {
+    try{
+        if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) 
+            throw "Not valid object id"
+        var user = await PendingEmployee.findById(req.params.id);
+        if (!user) {
+            throw "Can't find employee";
+        }
+        res.send({employee:user});
+    }catch(err){
+        res.status(400).send({message:err})
+    }  
+})
+
  router.post('/multipleemployee', authorize, async(req,res) => {
     let response = mevalidation(req.body)
     //res.send(response)
     let vldress = [], unvldress = []
     
-   try{
-        if(response.valid.length!=0)
-            vldress = await Employee.insertMany(response.valid)
-        if(response.invalid.length!=0)
-            unvldress = await PendingEmployee.insertMany(response.invalid)
-    
-    let data = {
-        valid: vldress,
-        unvalid: unvldress
-    }
-res.send(data)
+    try{
+            if(response.valid.length!=0)
+                vldress = await Employee.insertMany(response.valid)
+            if(response.invalid.length!=0)
+                unvldress = await PendingEmployee.insertMany(response.invalid)
+        
+        let data = {
+            valid: vldress,
+            unvalid: unvldress
+        }
+    res.send(data)
    }catch(err){
-     //  console.log(err.writeErrors)
-       //if(err.code===11000){
-         //  console.log("duplicate data present")
-           res.status(400).send({message:"duplicate data present"})
-       //}
-    //   res.status(404).send({message:"couldn't add Valid data"})
+        res.status(400).send({message:"duplicate data present"})
    }
  })
 
@@ -168,5 +186,19 @@ res.send(data)
         res.status(400).send({message:err})
     }   
  })
+
+router.post('/images', upload.single('image'), async (req, res) => {
+    const file = req.file
+    console.log(file)
+  
+    // apply filter
+    // resize 
+  
+    const result = await uploadFile(file)
+    await unlinkFile(file.path)
+    console.log(result)
+    //const description = req.body.description
+    res.send({imagePath: `/images/${result.Key}`})
+})
 
  export default router

@@ -4,6 +4,15 @@ import express from "express";
 import { config } from "dotenv";
 import bodyParser from 'body-parser';
 
+import fs from 'fs';
+import util from 'util';
+import { uploadFile, getFileStream} from './server/s3upload/s3.js';
+import multer from 'multer';
+//const { uploadFile, getFileStream } = require('./server/s3upload/s3')
+
+const unlinkFile = util.promisify(fs.unlink)
+
+const upload = multer({ dest: 'uploads/' })
 config();
 
 const port = Number(process.env.PORT);
@@ -59,6 +68,29 @@ app.use(function(err, req, res, next) {
     res.json({ error: err });
 });
   
+app.get('/images/:key', (req, res) => {
+  console.log(req.params)
+  const key = req.params.key
+  const readStream = getFileStream(key)
+
+  readStream.pipe(res)
+})
+
+
+app.post('/api/images', upload.single('image'), async (req, res) => {
+  const file = req.file
+  console.log(file)
+
+  // apply filter
+  // resize 
+
+  const result = await uploadFile(file)
+  await unlinkFile(file.path)
+  console.log(result)
+  //const description = req.body.description
+  res.send({imagePath: `/images/${result.Key}`})
+})
+
   /*
 app.get("*", (req, res) => {
     messager(res, 404, "route not found");

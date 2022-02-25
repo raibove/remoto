@@ -30,7 +30,7 @@ const employee_schema = new Schema(
             required: true,
         },
         doj:{
-            type:Date,
+            type:String,
             required: true
         },
         status:{
