@@ -81,12 +81,10 @@ const App = (props)=>{
           </Route>
           :
           <Route element={<PrivateRoute/>}>
-            <Route path="/dashboard" element={<UserDashboard/>} exact />  
-           
+            <Route path="/dashboard/:id" element={<UserDashboard/>} exact />             
           </Route>
           }
           <Route path="*" element={<E404/>} />
-
         </Routes>
       </Router>
     </div>

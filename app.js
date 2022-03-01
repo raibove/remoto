@@ -33,19 +33,9 @@ mongoose.connection.once("open", () =>
 
 const app = express();
 
-// create application/json parser
-var jsonParser = bodyParser.json()
-// create application/x-www-form-urlencoded parser
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
- /*
-app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
-*/
 
 app.use(cors());
+app.options("*", cors());
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 import employee from "./server/employee/employee.route.js"
@@ -55,11 +45,6 @@ app.use('/api/users/', employee)
 import user from "./server/users/user.route.js"
 app.use('/api/users/', user)
 
-// dummysecure route
-/*
-import secureRoute from "./server/profile/profile.routes.js"
-app.use('/api/user/',secureRoute)
-*/
 // employee route
 
 // Handle errors.
@@ -76,22 +61,7 @@ app.get('/images/:key', (req, res) => {
   readStream.pipe(res)
 })
 
-
-app.post('/api/images', upload.single('image'), async (req, res) => {
-  const file = req.file
-  console.log(file)
-
-  // apply filter
-  // resize 
-
-  const result = await uploadFile(file)
-  await unlinkFile(file.path)
-  console.log(result)
-  //const description = req.body.description
-  res.send({imagePath: `/images/${result.Key}`})
-})
-
-  /*
+/*
 app.get("*", (req, res) => {
     messager(res, 404, "route not found");
   });

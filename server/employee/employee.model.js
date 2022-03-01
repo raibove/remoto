@@ -40,6 +40,12 @@ const employee_schema = new Schema(
         accepted:{
             type:Boolean,
             default:false
+        },
+        adharURL:{
+            type:String
+        },
+        panURL:{
+            type:String
         }
     },
     {

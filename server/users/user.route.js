@@ -107,7 +107,9 @@ router.post('/register', async (req, res) => {
         role: user.role,
         token: token   
     }
-    res.header('AUTH_TOKEN', token).send(user_d)
+  //  res.setHeader('AUTH_TOKEN', token)
+    console.log(user_d)
+    res.status(200).send(user_d)
 
 })
 
@@ -176,5 +178,30 @@ router.post('/register_user/:id', async(req,res)=>{
     }
 
 })
+
+
+router.put('/update',authorize, async (req, res)=>{
+    try{
+        console.log(req.body.id)
+        const user = await User.findOne({_id: req.body.id})
+        console.log("user")
+        console.log(user)
+        if(!user){
+            throw "User not found"
+        }
+        const emp =  await Employee.findOneAndUpdate({email: user.email}, {panURL: req.body.panURL, adharURL: req.body.adharURL, name:"Shweta kale"})
+    // res.send({user: user._id})
+    // console.log("emp")
+    // console.log(emp)
+        if(!emp){
+            throw "Employee not found"
+        }
+        res.send(emp)
+    }catch(err){
+        res.status(400).send({message:err})
+    }
+})
+
+
 export default router
 

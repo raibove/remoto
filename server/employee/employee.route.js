@@ -187,18 +187,32 @@ router.get('/pendingemployee/:id', authorize, async(req,res) => {
     }   
  })
 
-router.post('/images', upload.single('image'), async (req, res) => {
+router.post('/images', authorize, upload.single('image'), async (req, res) => {
+    try{
     const file = req.file
     console.log(file)
-  
     // apply filter
-    // resize 
-  
+    // resize   
     const result = await uploadFile(file)
     await unlinkFile(file.path)
     console.log(result)
     //const description = req.body.description
-    res.send({imagePath: `/images/${result.Key}`})
+    console.log("g4")
+
+    var spawn = require("child_process").spawn;
+        console.log("g1")
+	var process  = spawn('python',["./panTesting.py","PanCard-jpg.jpg"]);
+    console.log("g2")
+	process.stdout.on('data',function(data){
+		console.log(data.toString())
+		res.send("👌")
+	});
+    console.log("g3")
+    res.send({imagePath: `${result.Location}`})
+    }catch(err){
+        res.status(400).send({message:err})
+    }
 })
+
 
  export default router
