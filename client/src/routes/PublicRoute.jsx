@@ -1,35 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Outlet } from "react-router-dom";
-/*
-export default (Component) =>
-  function PublicRoute() {
+import {Spin} from 'antd';
+
+const PublicRoute = ()=> {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-      (async () => {
+     
         try {
-          const token = localStorage.getItem("token");
-          if (token) {
-            navigate("/dashboard");
+          const token = localStorage.getItem("auth_token");
+          const id = localStorage.getItem("id");
+          const role = localStorage.getItem("role")
+          console.log(role)
+         if (token) {
+           if(role=="employee"){
+             navigate(`/dashboard/${id}`)
+           } else{
+           navigate("/dashboard");
+           }
           }
           setLoading(false);
         } catch (e) {
           console.log(e);
           setLoading(false);
         }
-      })();
     }, []);
     if (loading) {
-      return null;
+      return <Spin/>;
     }
     return <Outlet />;
   };
-  */
 
+/*
   const PublicRoute = ()=>{
     
     const navigate = useNavigate();
  
     return <Outlet/>
   }
-  export default PublicRoute
+ */
+ export default PublicRoute

@@ -29,11 +29,17 @@ export const signup = (data) => async (dispatch) => {
         payload: "Login Success",
       });
       console.log(res)
-      console.log("rs")
       localStorage.setItem("auth_token", res.data.token);
       localStorage.setItem("role", res.data.role)
+      localStorage.setItem("id", res.data._id)
+
+      if(res.data.role==="employee"){
+      window.location.href="/dashboard/"+res.data._id
+
+      }else{
       window.location.href="/dashboard"
-      return true;
+      }
+  //    return true;
     } catch (e) {
       let message = "Server error";
       console.log(e.response);
@@ -52,6 +58,7 @@ export const verifyToken = ()=> async(dispatch) => {
     return err.response
   }
 }
+
 export const signout = () => async (dispatch) => {
   localStorage.removeItem("auth_token");
   dispatch({ type: "SET_AUTH", payload: false });
@@ -68,19 +75,16 @@ export const getEmployee = (id)=> async (dispatch)=>{
   }
 }
 
-
 export const getAllEmployee = ()=> async (dispatch)=>{
   try{
     const res = await axios.get(`${baseURL}/users/allemployee`)
     console.log(res)
     dispatch({type:"GET_ALL_EMPLOYEE", payload: {all_employee: res.data.all_employee}})
     await dispatch(getPendingEmployee())
-
   }catch(err){
     dispatch({type:"SET_ALERT", payload: {message:"Failed to get Employee"}})
   }
 }
-
 
 export const getPendingEmployee = ()=> async (dispatch)=>{
   try{
@@ -89,6 +93,17 @@ export const getPendingEmployee = ()=> async (dispatch)=>{
     dispatch({type:"GET_PENDING_EMPLOYEE", payload: {pending_employee: res.data.pending_employee}})
   }catch(err){
     dispatch({type:"SET_ALERT", payload: {message:"Failed to get Pending Employee"}})
+  }
+}
+
+export const getSinglePendingEmployee = (id)=> async (dispatch)=>{
+  try{
+    const res = await axios.get(`${baseURL}/users/pendingemployee/${id}`)
+    //console.log(res)
+    dispatch({type:"GET_SINGLE_PENDING_EMPLOYEE", payload: {single_pending_employee: res.data.employee}})
+  }catch(err){
+    console.log(err)
+    dispatch({type:"SET_ALERT", payload: {message:"Failed to get Employee"}})
   }
 }
 
@@ -101,7 +116,6 @@ export const addEmployee = (data)=> async(dispatch)=>{
       payload: "Employee Added",
     });
     await dispatch(getAllEmployee())
-    await dispatch(getPendingEmployee())
     window.location.href = "/employee"
   }catch(err){
     console.log(err)
@@ -109,17 +123,26 @@ export const addEmployee = (data)=> async(dispatch)=>{
   }
 }
 
+export const updateEmployee = (data)=> async(dispatch)=>{
+  try{
+    const res = await axios.put(`${baseURL}/users/update`, data)
+    console.log(res)
+  }catch(err){
+    console.log(err)
+    dispatch({type:"SET_ALERT", payload: {message:err.response}})
+  }
+}
+
+
 export const addMultipleEmployee = (data)=> async(dispatch)=>{
   try{
     console.log(data)
-
     const res = await axios.post(`${baseURL}/users/multipleemployee`,data)
     console.log(res)
     await dispatch({
       type: "SUCCESS_DATA",
       payload: "Employee Added",
     });
-    await dispatch(getPendingEmployee())
     await dispatch(getAllEmployee())
   }catch(err){
     console.log(err)

@@ -178,6 +178,16 @@ const Employee = (props)=>{
                         dataIndex="error_msg"
                         key="error_msg"
                     />
+                    <Column
+                        title=""
+                        dataIndex="_id"
+                        key="_id"
+                        render = {(_id)=>(
+                            <Link to={"/pending-employee/"+_id}>
+                                Edit
+                            </Link>
+                        )}
+                    />
                 </Table>
                 </TabPane>
             </Tabs>

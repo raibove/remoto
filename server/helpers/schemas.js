@@ -29,7 +29,7 @@ export const employeeValidation = data => {
         status: Joi.string(),
         doj: Joi.date().required() 
     })
-    console.log(employee_schema.validate(data))
+    //console.log(employee_schema)
     return employee_schema.validate(data)
 }
 

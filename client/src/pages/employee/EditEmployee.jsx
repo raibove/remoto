@@ -2,18 +2,21 @@ import React, {useEffect, useState} from "react"
 import SideBar from "../../components/sidebar/SideBar"
 import {Table, Tag, Button, Input, notification, DatePicker} from "antd";
 
-import { signup, getAllEmployee, addEmployee } from "../../redux/actions/userAction";
+import { signup, getAllEmployee,getSinglePendingEmployee, addEmployee } from "../../redux/actions/userAction";
 import { connect } from "react-redux";
 import store from "../../redux/store";
 import "./Employee.css"
+import {useParams} from "react-router-dom"
+
 const {Column} = Table
 
-const Employee = (props)=>{
+const EditEmployee = (props)=>{
     const [empName, setEmpName] = useState("");
     const [empMail, setEmpMail] = useState("")
     const [empRole, setEmpRole] = useState("")
     const [empDoj, setEmpDoj] = useState("") 
     const [empLoading, setEmpLoading] = useState(false)
+    let params = useParams();
 
     const onAddEmployee = async ()=>{
       setEmpLoading(true)
@@ -60,6 +63,27 @@ const Employee = (props)=>{
         console.log(Math.floor(d.getTime()/1000))
         setEmpDoj(Math.floor(d.getTime()/1000))
     }
+
+    
+    useEffect(()=>{
+        if(props.single_pending_employee === null){
+            props.getSinglePendingEmployee(params.id)
+        }else{
+            let re = props.single_pending_employee
+            console.log(re)
+           // setEmp(props.single_pending_employee)
+           if(re!=null || re!=undefined){
+           if(re.name!=undefined)
+            setEmpName(re.name)
+           if(re.email!=undefined)
+            setEmpMail(re.email)
+            if(re.career!=undefined)
+            setEmpRole(re.career)
+           }
+        }
+    },[props.single_pending_employee])
+
+
     return(
         <>
         <SideBar/>
@@ -97,14 +121,16 @@ const Employee = (props)=>{
 const mapActionWithProps = {
     signup,
     getAllEmployee,
-    addEmployee
+    addEmployee,
+    getSinglePendingEmployee
   };
   
   const mapPropsWithState = (state) => ({
     alert_message: state.user.alert_message,
     success_message: state.user.success_message,
     all_employee: state.user.all_employee,
+    single_pending_employee: state.user.single_pending_employee,
   });
   
-  export default connect(mapPropsWithState, mapActionWithProps)(Employee);
+  export default connect(mapPropsWithState, mapActionWithProps)(EditEmployee);
   

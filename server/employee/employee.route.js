@@ -6,6 +6,16 @@ import {employeeValidation, multipleemployeeValidation, mevalidation} from "../h
 import { find_all_employee, find_pending_employee } from "./employee.service.js";
 import { config } from "dotenv";
 import sgMail from '@sendgrid/mail'
+
+
+import fs from 'fs';
+import util from 'util';
+import { uploadFile, getFileStream} from '../s3upload/s3.js';
+import multer from 'multer';
+
+const unlinkFile = util.promisify(fs.unlink)
+const upload = multer({ dest: 'uploads/' })
+
 config()
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
@@ -27,7 +37,7 @@ const offerHtml = (emp)=>{
          <br/><br/>
          As an employee of Company ABC, you will also have access to our comprehensive benefits program, 
          which includes unlimited vacation days, health insurance, RRSPs and tuition reimbursement.
-         To accept this offer, please email me at shwetakale144@gmail.com by ${emp.doj}, and I will get you started with the rest of the onboarding process.
+         To accept this offer, please add your signatur <a href="http://localhost:3000/letter/${emp._id}">here</a> by ${emp.doj}, and I will get you started with the rest of the onboarding process.
         <br/><br/>
         We are excited about the possibility of you joining Company ABC! <br/>
         If you have any questions, please contact me directly via phone or email.  
@@ -45,9 +55,9 @@ router.post('/newemployee', authorize, async (req, res) => {
         let d = {
             message: error.details[0].message
         }
+        //console.log("inn 50"+error)
         return res.status(400).send(d)
     }
-    console.log(error)
     //check if user with email exist
     const emailExist = await Employee.findOne({email: req.body.email})
     let d1 = {
@@ -63,7 +73,6 @@ router.post('/newemployee', authorize, async (req, res) => {
     })
 
     try{
-        const savedUser = await employee.save()
         let single_offer_mail = {
             to: employee.email, // Change to your recipient
             from: 'shwetakale144@gmail.com', // Change to your verified sender
@@ -71,13 +80,7 @@ router.post('/newemployee', authorize, async (req, res) => {
             html: offerHtml(employee),          
         }
         sgMail.send(single_offer_mail) 
-        .then(() => {
-            console.log('Email sent')
-          })
-          .catch((error) => {
-            console.error(error)
-          })
-
+        const savedUser = await employee.save()
         res.send({employee: employee._id})
     } catch(err){
         let d = {
@@ -111,7 +114,6 @@ router.post('/newemployee', authorize, async (req, res) => {
     try{
     let pending_employee = await find_pending_employee(page, dpp)
     res.send({pending_employee: pending_employee})
-    
     }catch(err){
         console.log(err)
         let d = {
@@ -121,29 +123,38 @@ router.post('/newemployee', authorize, async (req, res) => {
     }
  })
 
+router.get('/pendingemployee/:id', authorize, async(req,res) => {
+    try{
+        if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) 
+            throw "Not valid object id"
+        var user = await PendingEmployee.findById(req.params.id);
+        if (!user) {
+            throw "Can't find employee";
+        }
+        res.send({employee:user});
+    }catch(err){
+        res.status(400).send({message:err})
+    }  
+})
+
  router.post('/multipleemployee', authorize, async(req,res) => {
     let response = mevalidation(req.body)
     //res.send(response)
     let vldress = [], unvldress = []
     
-   try{
-        if(response.valid.length!=0)
-            vldress = await Employee.insertMany(response.valid)
-        if(response.invalid.length!=0)
-            unvldress = await PendingEmployee.insertMany(response.invalid)
-    
-    let data = {
-        valid: vldress,
-        unvalid: unvldress
-    }
-res.send(data)
+    try{
+            if(response.valid.length!=0)
+                vldress = await Employee.insertMany(response.valid)
+            if(response.invalid.length!=0)
+                unvldress = await PendingEmployee.insertMany(response.invalid)
+        
+        let data = {
+            valid: vldress,
+            unvalid: unvldress
+        }
+    res.send(data)
    }catch(err){
-     //  console.log(err.writeErrors)
-       //if(err.code===11000){
-         //  console.log("duplicate data present")
-           res.status(400).send({message:"duplicate data present"})
-       //}
-    //   res.status(404).send({message:"couldn't add Valid data"})
+        res.status(400).send({message:"duplicate data present"})
    }
  })
 
@@ -175,5 +186,33 @@ res.send(data)
         res.status(400).send({message:err})
     }   
  })
+
+router.post('/images', authorize, upload.single('image'), async (req, res) => {
+    try{
+    const file = req.file
+    console.log(file)
+    // apply filter
+    // resize   
+    const result = await uploadFile(file)
+    await unlinkFile(file.path)
+    console.log(result)
+    //const description = req.body.description
+    console.log("g4")
+
+    var spawn = require("child_process").spawn;
+        console.log("g1")
+	var process  = spawn('python',["./panTesting.py","PanCard-jpg.jpg"]);
+    console.log("g2")
+	process.stdout.on('data',function(data){
+		console.log(data.toString())
+		res.send("👌")
+	});
+    console.log("g3")
+    res.send({imagePath: `${result.Location}`})
+    }catch(err){
+        res.status(400).send({message:err})
+    }
+})
+
 
  export default router

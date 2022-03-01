@@ -1,24 +1,31 @@
 import React, {useEffect, useState} from "react"
 import SideBar from "../../components/sidebar/SideBar"
-import {Table, Tag, Button, notification} from "antd";
-import {Link} from "react-router-dom"
-import { signup, getAllEmployee } from "../../redux/actions/userAction";
+import { Button, notification, Upload, message} from "antd";
+import {FolderViewOutlined} from '@ant-design/icons'
+import {useParams} from "react-router-dom"
+import { signup, getAllEmployee, updateEmployee } from "../../redux/actions/userAction";
 import { connect } from "react-redux";
-import xlsx from "xlsx"
 import store from "../../redux/store";
 import "./Dashboard.css"
-import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from 'recharts';
+import axios from "axios";
 
+const baseURL = process.env.REACT_APP_BACKEND_URL;
 const UserDashboard = (props)=>{
+  const [fileList, setFileList] = useState([])
+  const [adharURL, setAdharURL] = useState("")
+  const [panURL, setPanURL] = useState("")
+  const [type, setType] = useState(null);
+  const [fileUploading, setFileUploading] = useState(false)
 
-const close = () => {
+  const params = useParams();
+  const close = () => {
     store.dispatch({ type: "SET_ALERT", payload: { message: null } });
   };
 
   
 const openNotification = (err) => {
   notification["error"]({
-    message: "Error in signup",
+    message: "Error in Saving",
     description: err.message,
     onClose: close,
   });
@@ -31,34 +38,101 @@ useEffect(() => {
   }
 }, [props.alert_message]);
 
+/**
+* File upload
+*/
 
-    return(
-        <>
-        <SideBar/>
-        <div className="dashboard-container">
-            <div className="dashboad-card-container">
-                <div className="dashboard-card">
-                    <p>25</p>
-                    <p>Offers Send</p>
-                </div>
-                <div className="dashboard-card" style={{color:"#07FE5B"}}>
-                    <p>15</p>
-                    <p>Offers Accepted</p>
-                </div>
-                <div style={{color:"#CF2548"}}className="dashboard-card">
-                    <p>10</p>
-                    <p>Offers Rejected</p>
-                </div>
-            </div>
-           
+ const fileProps = {
+  onRemove: (file) => {
+    const index = fileList.indexOf(file);
+    const newFileList = fileList.slice();
+    newFileList.splice(index, 1);
+    setFileList(newFileList);
+  },
+
+  beforeUpload: (file) => {
+    setFileUploading(true)
+    handleUpload(file);
+    return false;
+  },
+  fileList,
+};
+
+
+const handleUpload = async (file) => {
+  const formData = new FormData();
+  formData.append("image", file);
+  try {
+    const res = await axios.post(
+      `${baseURL}/users/images`,
+      formData
+    );
+   console.log(res)
+   // setFileList(temp);
+   // setPreviewImage(res.data.attachments[0].filePath);
+   console.log(type)
+   if(type=="pan"){
+      setPanURL(res.data.imagePath)
+    }else if(type=="adhar"){
+      setAdharURL(res.data.imagePath)
+    }
+    setFileUploading(false)
+    console.log(panURL)
+    console.log(adharURL)
+    message.success("upload successfully.");
+  } catch (e) {
+    message.error("upload failed.");
+    setFileUploading(false)
+  }
+};
+
+const saveEmployee = async ()=>{
+    let data = {
+      id: params.id,
+      panURL: panURL,
+      adharURL: adharURL
+    }
+    await props.updateEmployee(data)
+}
+
+/***/
+
+return(
+    <>
+    <SideBar/>
+    <div className="empdash">
+      <div className="empcontainer">
+        <div className="doc">
+          <p>Adhars Card: </p>
+          <Button><FolderViewOutlined /></Button>
+          <Upload {...fileProps}>
+            <Button loading={fileUploading} onClick={()=>{setType("adhar")}}>
+              Upload Adhar
+            </Button>
+          </Upload>
         </div>
-        </>
-    )
+        <div className="doc">
+          <p>Pan Card: </p>
+          <Button><FolderViewOutlined /></Button>
+          <Upload {...fileProps}>
+            <Button  loading={fileUploading} onClick={()=>{setType("pan")}}>
+              Upload Pan Card
+            </Button>
+          </Upload>
+        </div>
+        <div>
+          <Button type="primary" onClick={saveEmployee}>Save</Button>
+        </div>
+      </div>
+    </div>
+    </>
+  )
 }
 
 const mapActionWithProps = {
     signup,
     getAllEmployee,
+    updateEmployee
   };
   
   const mapPropsWithState = (state) => ({

@@ -18,6 +18,7 @@ import { connect } from "react-redux";
 
 const Siderbar = ({ signout }) => {
     const [role, setRole] = useState("admin");
+    const [id, setId] = useState("");
     const [loading, setLoading] = useState(true);
     let width = window.innerWidth;
 
@@ -26,7 +27,9 @@ const Siderbar = ({ signout }) => {
     (async () => {
       try {
         const role = localStorage.getItem("role");
+        const id = localStorage.getItem("id");
         setRole(role);
+        setId(id);
       } catch (error) {
         console.log(error);
       }
@@ -200,7 +203,7 @@ const Siderbar = ({ signout }) => {
              {/* DASHBOARD */}
              <li className="side-item">
                <NavLink
-                 to="/dashboard"
+                 to={"/dashboard/"+id}
                  activeClassName="active-side-nav-link"
                  className="side-link"
                >
@@ -241,7 +244,7 @@ const Siderbar = ({ signout }) => {
            {/* DASHBOARD */}
            <li className="side-item">
              <NavLink
-               to="/dashboard"
+               to={"/dashboard/"+id}
                activeClassName="active-side-nav-link"
                className="side-link"
              >

@@ -30,7 +30,7 @@ const employee_schema = new Schema(
             required: true,
         },
         doj:{
-            type:Date,
+            type:String,
             required: true
         },
         status:{
@@ -40,6 +40,12 @@ const employee_schema = new Schema(
         accepted:{
             type:Boolean,
             default:false
+        },
+        adharURL:{
+            type:String
+        },
+        panURL:{
+            type:String
         }
     },
     {

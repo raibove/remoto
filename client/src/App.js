@@ -9,6 +9,7 @@ import E404 from "./pages/error/E404";
 import Dashboard from "./pages/dashboard/Dashboard"
 import UserDashboard from "./pages/employeeDashboard/Dashboard"
 import NewEmployee from "./pages/employee/NewEmployee"
+import EditEmployee from "./pages/employee/EditEmployee"
 import Employee from "./pages/employee/Employee"
 import Account from "./pages/account/Account"
 import Letter from "./pages/letter/Letter"
@@ -75,16 +76,15 @@ const App = (props)=>{
             <Route path="/employee" element={<Employee/>} exact />  
             <Route path="/account" element={<Account/>} exact />  
             <Route path="/employee/:id" element={<SingleEmployee/>} exact />  
+            <Route path="/pending-employee/:id" element={<EditEmployee/>} exact />  
             <Route path="/new-employee" element={<NewEmployee/>} exact/>
           </Route>
           :
           <Route element={<PrivateRoute/>}>
-            <Route path="/dashboard" element={<UserDashboard/>} exact />  
-           
+            <Route path="/dashboard/:id" element={<UserDashboard/>} exact />             
           </Route>
           }
           <Route path="*" element={<E404/>} />
-
         </Routes>
       </Router>
     </div>
