@@ -11,11 +11,14 @@ import axios from "axios";
 
 const baseURL = process.env.REACT_APP_BACKEND_URL;
 const UserDashboard = (props)=>{
+  const [loading, setLoading] = useState(true)
   const [fileList, setFileList] = useState([])
   const [adharURL, setAdharURL] = useState("")
   const [panURL, setPanURL] = useState("")
   const [type, setType] = useState(null);
   const [fileUploading, setFileUploading] = useState(false)
+  const [saveDisabled, setSaveDisabled] = useState(false)
+  const [saveLoading, setSaveLoading] = useState(false)
 
   const params = useParams();
   const close = () => {
@@ -52,6 +55,7 @@ useEffect(() => {
 
   beforeUpload: (file) => {
     setFileUploading(true)
+    setSaveDisabled(true)
     handleUpload(file);
     return false;
   },
@@ -62,38 +66,43 @@ useEffect(() => {
 const handleUpload = async (file) => {
   const formData = new FormData();
   formData.append("image", file);
+  formData.append("description", type);
+  
   try {
     const res = await axios.post(
       `${baseURL}/users/images`,
       formData
     );
-   console.log(res)
-   // setFileList(temp);
-   // setPreviewImage(res.data.attachments[0].filePath);
-   console.log(type)
+   console.log(res.data)
+   
    if(type=="pan"){
       setPanURL(res.data.imagePath)
     }else if(type=="adhar"){
       setAdharURL(res.data.imagePath)
     }
     setFileUploading(false)
+    setSaveDisabled(false)
     console.log(panURL)
     console.log(adharURL)
     message.success("upload successfully.");
   } catch (e) {
     message.error("upload failed.");
     setFileUploading(false)
+    setSaveDisabled(false)
   }
 };
 
 const saveEmployee = async ()=>{
+  setSaveLoading(true)
     let data = {
       id: params.id,
       panURL: panURL,
       adharURL: adharURL
     }
     await props.updateEmployee(data)
+    await setSaveLoading(false)
 }
+
 
 /***/
 
@@ -121,7 +130,7 @@ return(
           </Upload>
         </div>
         <div>
-          <Button type="primary" onClick={saveEmployee}>Save</Button>
+          <Button type="primary"loading={saveLoading} onClick={saveEmployee} disabled={saveDisabled} loading={saveLoading}>Save</Button>
         </div>
       </div>
     </div>

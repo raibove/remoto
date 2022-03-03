@@ -16,9 +16,11 @@ import sys
 import urllib.request
 
 l=[]
-l= "AWS_URL".split('/')
+AWS_URL = str(sys.argv[1])
+#AWS_URL = 'https://documents-be-project.s3.amazonaws.com/7df6cde53093d92fd1f66f31efb367ff.jpeg'
+l= AWS_URL.split('/')
 fileName = l[-1]
-imgpath = urllib.request.urlretrieve("AWS_URL",fileName)
+imgpath = urllib.request.urlretrieve(AWS_URL, fileName)
 ENDPOINT_URL = 'https://vision.googleapis.com/v1/images:annotate'
 api_key = 'AIzaSyCzPvON735JrR-XUBjpaEB7wm3ijJtpn_o'
 img_req = None
@@ -70,6 +72,6 @@ for index in range(1,len(result)):
     elif re.findall('\d{2}\/\d{2}\/\d{4}',item) :
             details['dob'] = item
 
-print("\n*********************\n\n", details, "\n\n\n*********************\n")
+print(details)
 
 
