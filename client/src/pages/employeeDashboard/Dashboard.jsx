@@ -112,8 +112,8 @@ return(
     <div className="empdash">
       <div className="empcontainer">
         <div className="doc">
-          <p>Adhars Card: </p>
-          <Button><FolderViewOutlined /></Button>
+          <p>Adhar Card: </p>
+          <FolderViewOutlined className="viewDoc"/>
           <Upload {...fileProps}>
             <Button loading={fileUploading} onClick={()=>{setType("adhar")}}>
               Upload Adhar
@@ -122,7 +122,7 @@ return(
         </div>
         <div className="doc">
           <p>Pan Card: </p>
-          <Button><FolderViewOutlined /></Button>
+          <FolderViewOutlined className="viewDoc"/>
           <Upload {...fileProps}>
             <Button  loading={fileUploading} onClick={()=>{setType("pan")}}>
               Upload Pan Card
