@@ -75,10 +75,10 @@ const handleUpload = async (file) => {
     );
    console.log(res.data)
    
-   if(type=="pan"){
-      setPanURL(res.data.imagePath)
-    }else if(type=="adhar"){
-      setAdharURL(res.data.imagePath)
+   if(type=="pan" && res.data.length>=4){
+      setPanURL(res.data[3])
+    }else if(type=="adhar" && res.data.length>=5){
+      setAdharURL(res.data[4])
     }
     setFileUploading(false)
     setSaveDisabled(false)

@@ -188,17 +188,17 @@ router.put('/update',authorize, async (req, res)=>{
         console.log(user)
         if(!user){
             throw "User not found"
-        }
+        }else{
         const emp =  await Employee.findOneAndUpdate({email: user.email}, {panURL: req.body.panURL, adharURL: req.body.adharURL, name:"Shweta kale"})
     // res.send({user: user._id})
-    // console.log("emp")
-    // console.log(emp)
+        console.log(req.body.panURL)
+        console.log(req.body.adharURL)
+        console.log(emp)
         if(!emp){
             throw "Employee not found"
         }
         res.send(emp)
-
-        
+        }
     }catch(err){
         res.status(400).send({message:err})
     }
