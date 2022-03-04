@@ -14,6 +14,50 @@ const { Step } = Steps;
 const SingleEmployee = (props)=>{
     const [emp,setEmp] = useState(null)
     
+      
+  const columns = [
+    {
+      title: 'Type',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'View',
+      dataIndex: 'link',
+      key: 'link',
+      render:(text)=>(
+        <a href={text} target="_blank">View</a>
+      )      
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      render: status =>(
+        <>
+        {status=="Unverified"?
+        <Tag color="red" key={status}>{status}</Tag>:
+        <Tag color="green" key={status}>{status}</Tag>
+        }
+        </>
+      )
+    }
+  ]
+
+  const data= [
+    {
+      key:'1',
+      name:'Aadhar Card',
+      link:'https://documents-be-project.s3.amazonaws.com/2a109d16cdb7b2939374bafbf61293dd.jpeg',
+      status:'Unverified'
+    },
+    {
+      key:'2',
+      name:'Pan Card',
+      link:'https://documents-be-project.s3.amazonaws.com/55b795033925eaeac60c6d1b936d8c28.jpeg',
+      status:'Unverified'
+    }
+  ]
     let params = useParams();
     const close = () => {
       store.dispatch({ type: "SET_ALERT", payload: { message: null } });
@@ -77,11 +121,12 @@ const SingleEmployee = (props)=>{
             </div>
             <div className="employee-chat-container">
                 <div className="employee-chat">
-
+                 <Table size="medium" columns={columns} dataSource={data} pagination={{position:['none', 'none']}}/>
                 </div>
-                <div className="employee-chat">
+               {/* <div className="employee-chat">
                     
                 </div>
+              */}
             </div>
         </div>
         }
