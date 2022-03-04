@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react"
 import SideBar from "../../components/sidebar/SideBar"
-import { Button, notification, Upload, message} from "antd";
+import { Button, notification, Spin, Upload, message} from "antd";
 import {FolderViewOutlined} from '@ant-design/icons'
 import {useParams} from "react-router-dom"
-import { signup, getAllEmployee, updateEmployee } from "../../redux/actions/userAction";
+import { signup, getAllEmployee, updateEmployee, getEmployeeInfo } from "../../redux/actions/userAction";
 import { connect } from "react-redux";
 import store from "../../redux/store";
 import "./Dashboard.css"
@@ -28,7 +28,7 @@ const UserDashboard = (props)=>{
   
 const openNotification = (err) => {
   notification["error"]({
-    message: "Error in Saving",
+    message: "Error",
     description: err.message,
     onClose: close,
   });
@@ -41,6 +41,24 @@ useEffect(() => {
   }
 }, [props.alert_message]);
 
+useEffect(()=>{
+  setLoading(true)
+  if(props.employee_info==null){
+    props.getEmployeeInfo(params.id)
+  }else{
+    console.log(props.employee_info)
+    if(props.employee_info.data!=undefined){
+      
+      if(props.employee_info.data.panURL!=undefined){
+        setPanURL(props.employee_info.data.panURL)
+      }
+      if(props.employee_info.data.adharURL!=undefined){
+        setAdharURL(props.employee_info.data.adharURL)
+      }
+    }
+  }
+  setLoading(false)
+}, [props.employee_info])
 /**
 * File upload
 */
@@ -109,31 +127,40 @@ const saveEmployee = async ()=>{
 return(
     <>
     <SideBar/>
-    <div className="empdash">
-      <div className="empcontainer">
-        <div className="doc">
-          <p>Aadhar Card: </p>
-          <FolderViewOutlined className="viewDoc"/>
-          <Upload {...fileProps}>
-            <Button loading={fileUploading} onClick={()=>{setType("adhar")}}>
-              Upload Aadhar
-            </Button>
-          </Upload>
-        </div>
-        <div className="doc">
-          <p>Pan Card: </p>
-          <FolderViewOutlined className="viewDoc"/>
-          <Upload {...fileProps}>
-            <Button  loading={fileUploading} onClick={()=>{setType("pan")}}>
-              Upload Pan Card
-            </Button>
-          </Upload>
-        </div>
-        <div>
-          <Button type="primary"loading={saveLoading} onClick={saveEmployee} disabled={saveDisabled} loading={saveLoading}>Save</Button>
+    {
+    loading===true?
+      <Spin/>
+      :
+      <div className="empdash">
+        <div className="empcontainer">
+          <div className="doc">
+            <p>Aadhar Card: </p>
+            <a href={adharURL} target="_blank">
+              <FolderViewOutlined className="viewDoc"/>
+            </a>
+            <Upload {...fileProps}>
+              <Button loading={fileUploading} onClick={()=>{setType("adhar")}}>
+                Upload Aadhar
+              </Button>
+            </Upload>
+          </div>
+          <div className="doc">
+            <p>Pan Card: </p>
+            <a href={panURL} target="_blank">
+              <FolderViewOutlined className="viewDoc"/>
+            </a>
+            <Upload {...fileProps}>
+              <Button  loading={fileUploading} onClick={()=>{setType("pan")}}>
+                Upload Pan Card
+              </Button>
+            </Upload>
+          </div>
+          <div>
+            <Button type="primary"loading={saveLoading} onClick={saveEmployee} disabled={saveDisabled} loading={saveLoading}>Save</Button>
+          </div>
         </div>
       </div>
-    </div>
+    }
     </>
   )
 }
@@ -141,13 +168,15 @@ return(
 const mapActionWithProps = {
     signup,
     getAllEmployee,
-    updateEmployee
+    updateEmployee,
+    getEmployeeInfo
   };
   
   const mapPropsWithState = (state) => ({
     alert_message: state.user.alert_message,
     success_message: state.user.success_message,
     all_employee: state.user.all_employee,
+    employee_info: state.user.employee_info
   });
   
   export default connect(mapPropsWithState, mapActionWithProps)(UserDashboard);

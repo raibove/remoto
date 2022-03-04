@@ -7,6 +7,7 @@ const initialState = {
     employee: null,
     newjoinee: null,
     single_pending_employee:null,
+    employee_info: null,
 }
 
 const userReducer = (state=initialState, action) => {
@@ -27,6 +28,8 @@ const userReducer = (state=initialState, action) => {
         return {...state, newjoinee: action.payload.newjoinee}
         case "GET_SINGLE_PENDING_EMPLOYEE":
         return {...state, single_pending_employee: action.payload.single_pending_employee}
+        case "GET_EMPLOYEE_INFO":
+        return {...state, employee_info: action.payload.employee_info}
       default:
       return state;
     }

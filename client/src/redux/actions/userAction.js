@@ -133,7 +133,16 @@ export const updateEmployee = (data)=> async(dispatch)=>{
   }
 }
 
-
+export const getEmployeeInfo = (id) => async(dispatch)=>{
+  try{
+    const res = await axios.get(`${baseURL}/users/employee/${id}`)
+    console.log(res)
+    dispatch({type:"GET_EMPLOYEE_INFO", payload: {employee_info: res}})
+  }catch(err){
+    console.log(err)
+    dispatch({type:"SET_ALERT", payload: {message:err.response}})
+  }
+}
 export const addMultipleEmployee = (data)=> async(dispatch)=>{
   try{
     console.log(data)
