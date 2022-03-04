@@ -112,11 +112,11 @@ return(
     <div className="empdash">
       <div className="empcontainer">
         <div className="doc">
-          <p>Adhar Card: </p>
+          <p>Aadhar Card: </p>
           <FolderViewOutlined className="viewDoc"/>
           <Upload {...fileProps}>
             <Button loading={fileUploading} onClick={()=>{setType("adhar")}}>
-              Upload Adhar
+              Upload Aadhar
             </Button>
           </Upload>
         </div>

@@ -28,7 +28,8 @@ img_req = None
 details = {
         'name':'',
         'pan':'',
-        'dob':''
+        'dob':'',
+        'location':''
     }
 name_flag=0
 
@@ -72,6 +73,14 @@ for index in range(1,len(result)):
     elif re.findall('\d{2}\/\d{2}\/\d{4}',item) :
             details['dob'] = item
 
-print(details)
+details['name']     = details['name'].strip()
+details['dob']      = details['dob'].strip()
+details['pan']      = details['pan'].strip()
+details['location'] = AWS_URL.strip()
+
+
+print(details['name'] + "\n" + details['pan'] + '\n' + details['dob'] + '\n' + details['location'], end="")
+
+#print(details)
 
 

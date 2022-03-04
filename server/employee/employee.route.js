@@ -197,15 +197,19 @@ router.post('/images', authorize, upload.single('image'), async (req, res) => {
         var process = spawn('python',["./panTesting.py", result.Location] );
         process.stdout.on('data',function(data){
            console.log(data)
-           data.imagePath = result.Location
-           console.log(data)
-            res.send(data);
+           const details = JSON.stringify((data.toString()).split(/\r?\n/))
+	    	console.log(details)
+           //data.imagePath = result.Location
+            //console.log(data)
+            res.send(details);
         });
     }else{
         var process = spawn('python',["./adharTesting.py", result.Location] );
         process.stdout.on('data',function(data){
-           data.imagePath = result.Location
-            res.send(data);
+            const details = JSON.stringify((data.toString()).split(/\r?\n/))
+		console.log(details)
+           //data.imagePath = result.Location
+            res.send(details);
         });
     }   
     //res.send({imagePath: `${result.Location}`})

@@ -197,6 +197,8 @@ router.put('/update',authorize, async (req, res)=>{
             throw "Employee not found"
         }
         res.send(emp)
+
+        
     }catch(err){
         res.status(400).send({message:err})
     }
