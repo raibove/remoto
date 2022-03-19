@@ -20,11 +20,13 @@ import PublicRoute from "./routes/PublicRoute";
 import api from "./shared/api"; 
 import { connect } from "react-redux";
 import store from "./redux/store";
-import { Alert } from "antd";
+import { Alert, Spin } from "antd";
 
 const App = (props)=>{
   const [role, setRole] = useState("admin")
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
+    setLoading(true)
     api();
     (async () => {
       try {
@@ -34,7 +36,7 @@ const App = (props)=>{
         console.log(error);
       }
     })();
-    
+    setLoading(false)
   }, []);
 
   return(
@@ -60,6 +62,7 @@ const App = (props)=>{
         ) : (
           ""
         )}
+        {loading==true? <Spin/>:
       <Router>
         <Routes>
         {/*  <Route path="/" element={PublicRoute(Landing)} exact />
@@ -87,6 +90,7 @@ const App = (props)=>{
           <Route path="*" element={<E404/>} />
         </Routes>
       </Router>
+        }
     </div>
   )
 }

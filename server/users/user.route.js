@@ -114,6 +114,7 @@ router.post('/register', async (req, res) => {
 })
 
  router.get('/verify_token', authorize, async(req,res)=>{
+    console.log(req.query.token)
     res.send("verified")
  })
 /*
@@ -179,24 +180,42 @@ router.post('/register_user/:id', async(req,res)=>{
 
 })
 
+router.get('/employee/:id', authorize, async(req,res)=> {
+    try{
+        const user = await User.findOne({_id: req.params.id})
+        if(!user){
+            throw "User not found"
+        }else{
+        const emp =  await Employee.findOne({email: user.email})
+        if(!emp){
+            throw "Employee not found"
+        }
+        res.send(emp)
+        }
+    }catch(err){
+        console.log(err);
+        res.status(400).send({message:err})
+    }
+})
 
 router.put('/update',authorize, async (req, res)=>{
     try{
         console.log(req.body.id)
         const user = await User.findOne({_id: req.body.id})
-        console.log("user")
-        console.log(user)
+       console.log(user)
         if(!user){
             throw "User not found"
-        }
-        const emp =  await Employee.findOneAndUpdate({email: user.email}, {panURL: req.body.panURL, adharURL: req.body.adharURL, name:"Shweta kale"})
+        }else{
+        const emp =  await Employee.findOneAndUpdate({email: user.email}, {panURL: req.body.panURL, adharURL: req.body.adharURL})
     // res.send({user: user._id})
-    // console.log("emp")
-    // console.log(emp)
+        console.log(req.body.panURL)
+        console.log(req.body.adharURL)
+        console.log(emp)
         if(!emp){
             throw "Employee not found"
         }
         res.send(emp)
+        }
     }catch(err){
         res.status(400).send({message:err})
     }

@@ -46,7 +46,6 @@ import user from "./server/users/user.route.js"
 app.use('/api/users/', user)
 
 // employee route
-
 // Handle errors.
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);

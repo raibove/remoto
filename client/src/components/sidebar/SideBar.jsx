@@ -3,12 +3,14 @@ import "./SideBar.css";
 import { NavLink } from "react-router-dom";
 import {
   PieChartTwoTone,
+  UserOutlined,
   FileTextTwoTone,
   ToolTwoTone,
   LogoutOutlined,
   RightCircleTwoTone,
   UserSwitchOutlined,
   DatabaseOutlined,
+  KeyOutlined
 } from "@ant-design/icons";
 
 import { signout } from "../../redux/actions/userAction";
@@ -79,7 +81,7 @@ const Siderbar = ({ signout }) => {
                       activeClassName="active-side-nav-link"
                       className="side-link"
                     >
-                      <PieChartTwoTone
+                      <UserOutlined 
                         twoToneColor="#dd5dfd"
                         style={{ fontSize: "1.5rem" }}
                       />
@@ -93,7 +95,7 @@ const Siderbar = ({ signout }) => {
                       activeClassName="active-side-nav-link"
                       className="side-link"
                     >
-                      <PieChartTwoTone
+                      <KeyOutlined
                         twoToneColor="#dd5dfd"
                         style={{ fontSize: "1.5rem" }}
                       />
@@ -148,7 +150,7 @@ const Siderbar = ({ signout }) => {
                       activeClassName="active-side-nav-link"
                       className="side-link"
                     >
-                      <PieChartTwoTone
+                      <UserOutlined
                         twoToneColor="#dd5dfd"
                         style={{ fontSize: "1.5rem" }}
                       />
@@ -162,7 +164,7 @@ const Siderbar = ({ signout }) => {
                       activeClassName="active-side-nav-link"
                       className="side-link"
                     >
-                      <PieChartTwoTone
+                      <KeyOutlined
                         twoToneColor="#dd5dfd"
                         style={{ fontSize: "1.5rem" }}
                       />

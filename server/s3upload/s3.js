@@ -17,13 +17,16 @@ const s3 = new S3({
 // uploads a file to s3
  export function uploadFile(file) {
   const fileStream = fs.createReadStream(file.path)
-
+  let extArray = file.mimetype.split("/");
+ // console.log(extArray)
+  let extension = extArray[extArray.length - 1];
+ // console.log(extension)
+  let file_with_ext = file.filename + "." + extension
   const uploadParams = {
     Bucket: bucketName,
     Body: fileStream,
-    Key: file.filename
+    Key: file_with_ext
   }
-
   return s3.upload(uploadParams).promise()
 }
 //exports.uploadFile = uploadFile

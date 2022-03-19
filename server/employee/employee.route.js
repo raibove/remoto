@@ -6,12 +6,11 @@ import {employeeValidation, multipleemployeeValidation, mevalidation} from "../h
 import { find_all_employee, find_pending_employee } from "./employee.service.js";
 import { config } from "dotenv";
 import sgMail from '@sendgrid/mail'
-
-
 import fs from 'fs';
 import util from 'util';
-import { uploadFile, getFileStream} from '../s3upload/s3.js';
+import { uploadFile} from '../s3upload/s3.js';
 import multer from 'multer';
+import {spawn} from "child_process";
 
 const unlinkFile = util.promisify(fs.unlink)
 const upload = multer({ dest: 'uploads/' })
@@ -55,7 +54,6 @@ router.post('/newemployee', authorize, async (req, res) => {
         let d = {
             message: error.details[0].message
         }
-        //console.log("inn 50"+error)
         return res.status(400).send(d)
     }
     //check if user with email exist
@@ -139,7 +137,6 @@ router.get('/pendingemployee/:id', authorize, async(req,res) => {
 
  router.post('/multipleemployee', authorize, async(req,res) => {
     let response = mevalidation(req.body)
-    //res.send(response)
     let vldress = [], unvldress = []
     
     try{
@@ -191,28 +188,61 @@ router.post('/images', authorize, upload.single('image'), async (req, res) => {
     try{
     const file = req.file
     console.log(file)
-    // apply filter
-    // resize   
+    // apply filter resize   
     const result = await uploadFile(file)
     await unlinkFile(file.path)
-    console.log(result)
-    //const description = req.body.description
-    console.log("g4")
-
-    var spawn = require("child_process").spawn;
-        console.log("g1")
-	var process  = spawn('python',["./panTesting.py","PanCard-jpg.jpg"]);
-    console.log("g2")
-	process.stdout.on('data',function(data){
-		console.log(data.toString())
-		res.send("👌")
-	});
-    console.log("g3")
-    res.send({imagePath: `${result.Location}`})
+    const description = req.body.description
+    
+    if(description==="pan"){
+        var process = spawn('python',["./panTesting.py", result.Location] );
+        process.stdout.on('data',function(data){
+           console.log(data)
+           const details = JSON.stringify((data.toString()).split(/\r?\n/))
+	    	console.log(details)
+           //data.imagePath = result.Location
+            //console.log(data)
+            res.send(details);
+        });
+    }else{
+        var process = spawn('python',["./adharTesting.py", result.Location] );
+        process.stdout.on('data',function(data){
+            const details = JSON.stringify((data.toString()).split(/\r?\n/))
+		console.log(details)
+           //data.imagePath = result.Location
+            res.send(details);
+        });
+    }   
+    //res.send({imagePath: `${result.Location}`})
     }catch(err){
         res.status(400).send({message:err})
     }
 })
 
-
+router.get('/getcsv', authorize, async (req,res)=>{
+    try{
+        let data =  await Employee.find()
+        //.toArray();
+        console.log(data)
+       // console.log(data[0]["name"])
+        res.send("ggg")
+    }catch(e){
+        res.status(400).send({message:e})
+    }
+})
+        /*
+        var csv = 'ID,Name,Email,Password\n';  
+          
+        data.forEach(function(row){  
+                csv += row["_id"] + "," + row["name"] + "," + row["email"] + "," + row["password"];
+                csv += "\n";  
+        });  
+        var hiddenElement = document.createElement('a');  
+        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);  
+        hiddenElement.target = '_blank';  
+              
+        //provide the name for the CSV file to be downloaded  
+        hiddenElement.download = 'Famous Personalities.csv';  
+        hiddenElement.click(); 
+            */
+//router.get('/stats', authorize, )
  export default router

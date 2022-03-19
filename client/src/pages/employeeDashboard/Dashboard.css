@@ -17,8 +17,24 @@
     column-gap: 15px;
     font-size: 15px;
     font-weight: bold;
+    align-items: center;
 }
 
 .doc>p{
    min-width: 100px;
+}
+
+.viewDoc{
+    font-size: 22px;
+    cursor:pointer;
+}
+
+.doc-verified{
+    color:green;
+    font-size: 22px;
+}
+
+.doc-unverified{
+    color:red;
+    font-size: 22px;
 }

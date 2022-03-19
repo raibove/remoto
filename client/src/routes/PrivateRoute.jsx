@@ -15,7 +15,7 @@ import { connect } from "react-redux";
           try {
             if (tokenRes) {
               api()
-              const res = await props.verifyToken();
+              const res = await props.verifyToken(tokenRes);
               const { status } = res;
               console.log(status);
               console.log(tokenRes);
