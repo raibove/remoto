@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import xlsx from "xlsx"
 import store from "../../redux/store";
 import "./Dashboard.css"
-import { PieChart, Pie, Sector, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 
 
   
@@ -106,7 +106,6 @@ useEffect(() => {
             <div className="dashboard-stats-container">
                 <div>
                 <PieChart width={400} height={400} onMouseLeave={() => setShowTooltip(false)}>
-        
                   <Pie 
                     data={data} 
                     dataKey="value" 
@@ -133,8 +132,7 @@ useEffect(() => {
                         wrapperStyle={{ visibility: "visible", pointerEvents: "auto" }}
                       />
                     )}
-                 </PieChart >
-          
+                 </PieChart>
                 </div>
             </div>
         </div>

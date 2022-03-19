@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react"
 import SideBar from "../../components/sidebar/SideBar"
-import { Button, notification, Spin, Upload, message} from "antd";
-import {FolderViewOutlined} from '@ant-design/icons'
+import { Button, notification, Tooltip, Spin, Upload, message} from "antd";
+import {FolderViewOutlined, CloseSquareOutlined, CheckSquareOutlined} from '@ant-design/icons'
 import {useParams} from "react-router-dom"
 import { signup, getAllEmployee, updateEmployee, getEmployeeInfo } from "../../redux/actions/userAction";
 import { connect } from "react-redux";
@@ -143,6 +143,9 @@ return(
                 Upload Aadhar
               </Button>
             </Upload>
+            <Tooltip title=" Document Verified">
+            <CheckSquareOutlined className="doc-verified"/>
+            </Tooltip>
           </div>
           <div className="doc">
             <p>Pan Card: </p>
@@ -154,9 +157,12 @@ return(
                 Upload Pan Card
               </Button>
             </Upload>
+            <Tooltip title=" Document Unverified">
+            <CloseSquareOutlined className="doc-unverified"/>
+            </Tooltip>
           </div>
           <div>
-            <Button type="primary"loading={saveLoading} onClick={saveEmployee} disabled={saveDisabled} loading={saveLoading}>Save</Button>
+            <Button type="primary" onClick={saveEmployee} disabled={saveDisabled} loading={saveLoading}>Save</Button>
           </div>
         </div>
       </div>

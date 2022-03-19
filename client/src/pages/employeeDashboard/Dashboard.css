@@ -28,3 +28,13 @@
     font-size: 22px;
     cursor:pointer;
 }
+
+.doc-verified{
+    color:green;
+    font-size: 22px;
+}
+
+.doc-unverified{
+    color:red;
+    font-size: 22px;
+}

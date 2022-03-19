@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react"
 import SideBar from "../../components/sidebar/SideBar"
 import {Table, Tag, Upload, Tabs, message, notification,Button} from "antd";
 import {Link} from "react-router-dom"
-import { signup, getAllEmployee,addMultipleEmployee, getPendingEmployee } from "../../redux/actions/userAction";
+import { signup, getAllEmployee,addMultipleEmployee, getPendingEmployee, generateCSV } from "../../redux/actions/userAction";
 import { connect } from "react-redux"
 import store from "../../redux/store";
 import xlsx from "xlsx"
@@ -10,21 +10,27 @@ import "./Account.css"
 
 const Account = (props)=>{
   
+    const createCSV = async ()=>{
+        await props.generateCSV();
+    }
     return(
         <>
         <SideBar/>
         <div className="account-microsoft-container">
-            <a href="https://admin.microsoft.com/AdminPortal/Home?#/users/:/adduser">
+            <Button type="primary" className="account-microsoft-add" onClick={()=>{createCSV()}}>
+                Create CSV
+            </Button>
+            <a href="https://admin.microsoft.com/AdminPortal/Home?#/users/:/adduser" target="_blank">
             <Button type="primary" className="account-microsoft-add">
                 Add a User
             </Button>
             </a>
-            <a href="https://admin.microsoft.com/AdminPortal/Home?#/users/:/addmultipleusers">
+            <a href="https://admin.microsoft.com/AdminPortal/Home?#/users/:/addmultipleusers" target="_blank">
             <Button type="primary" className="account-microsoft-add">
                 Add Multiple User
             </Button>
             </a>
-            <a href="https://account.activedirectory.windowsazure.com/UserManagement/MultifactorVerification.aspx?BrandContextID=O365">
+            <a href="https://account.activedirectory.windowsazure.com/UserManagement/MultifactorVerification.aspx?BrandContextID=O365" target="_blank">
             <Button type="primary" className="account-microsoft-add">
                 Add Multifactor Authentication
             </Button>
@@ -46,6 +52,7 @@ const mapActionWithProps = {
     getAllEmployee,
     addMultipleEmployee,
     getPendingEmployee,
+    generateCSV
   };
   
   const mapPropsWithState = (state) => ({

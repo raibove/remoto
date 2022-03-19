@@ -48,9 +48,9 @@ export const signup = (data) => async (dispatch) => {
     }
   };
 
-export const verifyToken = ()=> async(dispatch) => {
+export const verifyToken = (token)=> async(dispatch) => {
   try{
-    const res = await axios.get(`${baseURL}/users/verify_token`)
+    const res = await axios.get(`${baseURL}/users/verify_token?token=${token}`)
     return res
   }catch(err){
    // window.location.href = "/signin";
@@ -72,6 +72,15 @@ export const getEmployee = (id)=> async (dispatch)=>{
     dispatch({type:"GET_EMPLOYEE", payload: {employee: res.data.employee}})
   }catch(err){
     dispatch({type:"SET_ALERT", payload: {message:"Failed to get Employee"}})
+  }
+}
+
+export const generateCSV = ()=> async(dispatch)=>{
+  try{
+    const res = await axios.get(`${baseURL}/users/getcsv`)
+    console.log(res)
+  }catch(err){
+    dispatch({type:"SET_ALERT", payload: {message:"Failed to generate CSV"}})
   }
 }
 

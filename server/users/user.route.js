@@ -114,6 +114,7 @@ router.post('/register', async (req, res) => {
 })
 
  router.get('/verify_token', authorize, async(req,res)=>{
+    console.log(req.query.token)
     res.send("verified")
  })
 /*

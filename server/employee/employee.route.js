@@ -218,4 +218,31 @@ router.post('/images', authorize, upload.single('image'), async (req, res) => {
     }
 })
 
+router.get('/getcsv', authorize, async (req,res)=>{
+    try{
+        let data =  await Employee.find()
+        //.toArray();
+        console.log(data)
+       // console.log(data[0]["name"])
+        res.send("ggg")
+    }catch(e){
+        res.status(400).send({message:e})
+    }
+})
+        /*
+        var csv = 'ID,Name,Email,Password\n';  
+          
+        data.forEach(function(row){  
+                csv += row["_id"] + "," + row["name"] + "," + row["email"] + "," + row["password"];
+                csv += "\n";  
+        });  
+        var hiddenElement = document.createElement('a');  
+        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);  
+        hiddenElement.target = '_blank';  
+              
+        //provide the name for the CSV file to be downloaded  
+        hiddenElement.download = 'Famous Personalities.csv';  
+        hiddenElement.click(); 
+            */
+//router.get('/stats', authorize, )
  export default router
