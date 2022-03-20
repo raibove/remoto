@@ -192,18 +192,20 @@ router.post('/images', authorize, upload.single('image'), async (req, res) => {
     const result = await uploadFile(file)
     await unlinkFile(file.path)
     const description = req.body.description
-    
+    console.log(description)
     if(description==="pan"){
+        console.log("in pan")
         var process = spawn('python',["./panTesting.py", result.Location] );
         process.stdout.on('data',function(data){
-           console.log(data)
-           const details = JSON.stringify((data.toString()).split(/\r?\n/))
-	    	console.log(details)
-           //data.imagePath = result.Location
+            console.log(data)
+            const details = JSON.stringify((data.toString()).split(/\r?\n/))
+	        console.log(details)
+            //data.imagePath = result.Location
             //console.log(data)
             res.send(details);
         });
     }else{
+        console.log("in adhar")
         var process = spawn('python',["./adharTesting.py", result.Location] );
         process.stdout.on('data',function(data){
             const details = JSON.stringify((data.toString()).split(/\r?\n/))

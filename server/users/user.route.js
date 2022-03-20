@@ -206,15 +206,28 @@ router.put('/update',authorize, async (req, res)=>{
         if(!user){
             throw "User not found"
         }else{
-        const emp =  await Employee.findOneAndUpdate({email: user.email}, {panURL: req.body.panURL, adharURL: req.body.adharURL})
+            /*
+        const emp =  await Employee.findOneAndUpdate({email: user.email}, {panURL: req.body.panURL, adharURL: req.body.adharURL, panNo:req.body.panNo, adharNo: req.body.adharNo})
     // res.send({user: user._id})
-        console.log(req.body.panURL)
-        console.log(req.body.adharURL)
+        console.log(req.body.panNo)
+        console.log(req.body.adharNo)
         console.log(emp)
         if(!emp){
             throw "Employee not found"
         }
         res.send(emp)
+        */
+            (async function(){
+                    const emp = await Employee.findOneAndUpdate({email: user.email}, {panURL: req.body.panURL, adharURL: req.body.adharURL, panNo:req.body.panNo, adharNo: req.body.adharNo})
+                // res.send({user: user._id})
+                    console.log(req.body.panNo)
+                    console.log(req.body.adharNo)
+                    console.log(emp)
+                    if(!emp){
+                        throw "Employee not found"
+                    }
+                    res.send(emp)
+            }());
         }
     }catch(err){
         res.status(400).send({message:err})

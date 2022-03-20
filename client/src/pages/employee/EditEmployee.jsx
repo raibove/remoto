@@ -43,7 +43,7 @@ const EditEmployee = (props)=>{
     
   const openNotification = (err) => {
     notification["error"]({
-      message: "Error in signup",
+      message: "Error in edit employee",
       description: err.message,
       onClose: close,
     });

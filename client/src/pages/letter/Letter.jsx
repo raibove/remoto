@@ -28,7 +28,7 @@ const Letter = (props)=>{
 
     const openNotification = (err) => {
       notification["error"]({
-        message: "Error in signup",
+        message: "Error in letter",
         description: err.message,
         onClose: close,
       });

@@ -46,6 +46,12 @@ const employee_schema = new Schema(
         },
         panURL:{
             type:String
+        },
+        adharNo:{
+            type: String
+        },
+        panNo:{
+            type: String
         }
     },
     {

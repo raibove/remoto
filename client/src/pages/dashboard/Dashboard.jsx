@@ -71,7 +71,7 @@ const close = () => {
   
 const openNotification = (err) => {
   notification["error"]({
-    message: "Error in signup",
+    message: "Error in dashboard",
     description: err.message,
     onClose: close,
   });
