@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react"
 import SideBar from "../../components/sidebar/SideBar"
 import {Table, Tag, Upload, Tabs, message, notification,Button} from "antd";
 import {Link} from "react-router-dom"
-import { signup, getAllEmployee,addMultipleEmployee, getPendingEmployee, generateCSV } from "../../redux/actions/userAction";
+import { signup, getAllEmployee, getPendingEmployee, generateCSV } from "../../redux/actions/userAction";
 import { connect } from "react-redux"
 import store from "../../redux/store";
 import xlsx from "xlsx"
@@ -50,7 +50,6 @@ const Account = (props)=>{
 const mapActionWithProps = {
     signup,
     getAllEmployee,
-    addMultipleEmployee,
     getPendingEmployee,
     generateCSV
   };

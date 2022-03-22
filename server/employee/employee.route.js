@@ -11,7 +11,8 @@ import util from 'util';
 import { uploadFile} from '../s3upload/s3.js';
 import multer from 'multer';
 import {spawn} from "child_process";
-
+import fileSystem from "fs";
+import fastcsv from "fast-csv";
 const unlinkFile = util.promisify(fs.unlink)
 const upload = multer({ dest: 'uploads/' })
 
@@ -140,11 +141,11 @@ router.get('/pendingemployee/:id', authorize, async(req,res) => {
     let vldress = [], unvldress = []
     
     try{
-            if(response.valid.length!=0)
-                vldress = await Employee.insertMany(response.valid)
-            if(response.invalid.length!=0)
-                unvldress = await PendingEmployee.insertMany(response.invalid)
-        
+        if(response.valid.length!=0)
+            vldress = await Employee.insertMany(response.valid)
+        if(response.invalid.length!=0)
+            unvldress = await PendingEmployee.insertMany(response.invalid)
+    
         let data = {
             valid: vldress,
             unvalid: unvldress
@@ -223,10 +224,41 @@ router.post('/images', authorize, upload.single('image'), async (req, res) => {
 router.get('/getcsv', authorize, async (req,res)=>{
     try{
         let data =  await Employee.find()
-        //.toArray();
-        console.log(data)
-       // console.log(data[0]["name"])
-        res.send("ggg")
+        let requiredData = []
+        data.forEach(function(row){
+
+            var fullName = row["name"];
+            var names = fullName.split(" ")
+            var fName = names[0];
+            var lName = names[1];
+            var email = row["email"];
+            var displayName = fullName;
+            var usageLocation = "Pune";
+            var job = row["career"];
+            var UPN = fName + "_" + lName + "@remoto.onmicrosoft.com";
+
+            requiredData.push(
+                {
+                    "Username"                : UPN,
+                    "First name"              : fName,
+                    "Last name"               : lName,
+                    "Display name"            : displayName,
+                    "Job title"               : job,
+                    "Alternate email address" : email,
+                    "Usage location"          : usageLocation
+                }
+            );
+        });
+
+        var ws = fileSystem.createWriteStream("public/data.csv");
+        fastcsv
+            .write(requiredData, { headers: true })
+            .on("finish", function() {
+
+            res.send("Send");
+            })
+            .pipe(ws);
+
     }catch(e){
         res.status(400).send({message:e})
     }
