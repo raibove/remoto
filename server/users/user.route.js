@@ -4,7 +4,7 @@ import { authorize } from "../auth/auth.middleware.js";
 import { Employee, PendingEmployee } from "../employee/employee.model.js";
 import { User } from "./user.model.js";
 import {registerValidation, loginValidation} from "../helpers/schemas.js"
-
+import axios from "axios";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { config } from "dotenv";
@@ -198,23 +198,57 @@ router.get('/employee/:id', authorize, async(req,res)=> {
     }
 })
 
+const verifyPan = async (panNo) =>{
+    try{
+        return await axios.get(`https://verifyonboarding.herokuapp.com/pan/${panNo}`)
+    }catch(e){
+        console.log("error")  
+    }
+}
+
+const verifyAdhar = async (adharNo)=> {
+    try{
+        return await axios.get(`https://verifyonboarding.herokuapp.com/uid/${adharNo}`)
+    }catch(e){
+        console.log("error")
+    }
+}
+
 router.put('/update',authorize, async (req, res)=>{
     try{
         console.log(req.body.id)
         const user = await User.findOne({_id: req.body.id})
-       console.log(user)
+       
         if(!user){
             throw "User not found"
         }else{
-        const emp =  await Employee.findOneAndUpdate({email: user.email}, {panURL: req.body.panURL, adharURL: req.body.adharURL})
-    // res.send({user: user._id})
-        console.log(req.body.panURL)
-        console.log(req.body.adharURL)
-        console.log(emp)
-        if(!emp){
+            /*
+        const emp =  await Employee.findOneAndUpdate({email: user.email}, {panURL: req.body.panURL, adharURL: req.body.adharURL, panNo:req.body.panNo, adharNo: req.body.adharNo})
+         if(!emp){
             throw "Employee not found"
         }
         res.send(emp)
+        */
+            (async function(){
+                    const emp = await Employee.findOneAndUpdate({email: user.email}, {panURL: req.body.panURL, adharURL: req.body.adharURL, panNo:req.body.panNo, adharNo: req.body.adharNo})
+                    console.log(req.body.panNo)
+                    if(req.body.panNo != undefined && req.body.panNo!='')
+                    {
+                        const panV = await verifyPan(req.body.panNo);
+                        console.log(panV.data)
+                   }
+                   if(req.body.adharNo != undefined && req.body.adharNo!='')
+                   {
+                       const adharV = await verifyAdhar(req.body.adharNo);
+                       console.log(adharV.data)
+                  }
+                  
+                    if(!emp){
+                        throw "Employee not found"
+                    }
+                    res.send(emp)
+            }());
+
         }
     }catch(err){
         res.status(400).send({message:err})

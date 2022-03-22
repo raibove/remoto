@@ -15,6 +15,8 @@ const UserDashboard = (props)=>{
   const [fileList, setFileList] = useState([])
   const [adharURL, setAdharURL] = useState("")
   const [panURL, setPanURL] = useState("")
+  const [panNo, setPanNo] = useState("")
+  const [adharNo, setAdharNo] = useState("")
   const [type, setType] = useState(null);
   const [fileUploading, setFileUploading] = useState(false)
   const [saveDisabled, setSaveDisabled] = useState(false)
@@ -52,8 +54,14 @@ useEffect(()=>{
       if(props.employee_info.data.panURL!=undefined){
         setPanURL(props.employee_info.data.panURL)
       }
+      if(props.employee_info.data.panNo!=undefined){
+        setPanNo(props.employee_info.panNo)
+      }
       if(props.employee_info.data.adharURL!=undefined){
         setAdharURL(props.employee_info.data.adharURL)
+      }
+      if(props.employee_info.data.adharNo!= undefined){
+        setAdharNo(props.employee_info.data.adharNo)
       }
     }
   }
@@ -95,8 +103,10 @@ const handleUpload = async (file) => {
    
    if(type=="pan" && res.data.length>=4){
       setPanURL(res.data[3])
+      setPanNo(res.data[1])
     }else if(type=="adhar" && res.data.length>=5){
       setAdharURL(res.data[4])
+      setAdharNo(res.data[1])
     }
     setFileUploading(false)
     setSaveDisabled(false)
@@ -115,7 +125,9 @@ const saveEmployee = async ()=>{
     let data = {
       id: params.id,
       panURL: panURL,
-      adharURL: adharURL
+      adharURL: adharURL,
+      panNo: panNo,
+      adharNo: adharNo
     }
     await props.updateEmployee(data)
     await setSaveLoading(false)

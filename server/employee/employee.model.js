@@ -30,7 +30,7 @@ const employee_schema = new Schema(
             required: true,
         },
         doj:{
-            type:String,
+            type:Number,
             required: true
         },
         status:{
@@ -46,6 +46,12 @@ const employee_schema = new Schema(
         },
         panURL:{
             type:String
+        },
+        adharNo:{
+            type: String
+        },
+        panNo:{
+            type: String
         }
     },
     {

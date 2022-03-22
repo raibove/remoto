@@ -66,7 +66,7 @@ const SingleEmployee = (props)=>{
     
   const openNotification = (err) => {
     notification["error"]({
-      message: "Error in signup",
+      message: "Error in getEmployee",
       description: err.message,
       onClose: close,
     });
