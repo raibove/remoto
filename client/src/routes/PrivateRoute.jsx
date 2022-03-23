@@ -17,8 +17,8 @@ import { connect } from "react-redux";
               api()
               const res = await props.verifyToken(tokenRes);
               const { status } = res;
-              console.log(status);
-              console.log(tokenRes);
+              //console.log(status);
+              //console.log(tokenRes);
               if (status !== 200) {
                 navigate("/signin");
                 localStorage.removeItem("auth_token");

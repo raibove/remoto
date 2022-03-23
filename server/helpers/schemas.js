@@ -69,7 +69,7 @@ export const mevalidation = data=>{
             tmp.error_msg = result.error.details[0].message
             unvld.push(tmp)
         }else{
-            console.log("pass")
+            //console.log("pass")
             vld.push(d)
         }
     })

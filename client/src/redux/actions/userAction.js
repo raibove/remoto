@@ -50,7 +50,7 @@ export const signup = (data) => async (dispatch) => {
 
 export const verifyToken = (token)=> async(dispatch) => {
   try{
-    const res = await axios.get(`${baseURL}/users/verify_token?token=${token}`)
+    const res = await axios.get(`${baseURL}/users/verify_token`)
     return res
   }catch(err){
    // window.location.href = "/signin";

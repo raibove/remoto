@@ -78,8 +78,14 @@ router.post('/newemployee', authorize, async (req, res) => {
             subject: 'Offer Letter for joining',
             html: offerHtml(employee),          
         }
-        sgMail.send(single_offer_mail) 
+        sgMail.send(single_offer_mail).then(() => {
+            console.log('emails sent successfully!');
+        }).catch(error => {
+            console.log(error);
+        });
+
         const savedUser = await employee.save()
+
         res.send({employee: employee._id})
     } catch(err){
         let d = {
@@ -93,7 +99,7 @@ router.post('/newemployee', authorize, async (req, res) => {
 
  router.get('/allemployee', authorize,is_admin, async(req,res) =>{
     let page = !req.query.page ? 1 : Number(req.query.page);
-    let dpp = !req.query.dpp ? 20 : Number(req.query.dpp);
+    let dpp = !req.query.dpp ? 10 : Number(req.query.dpp);
     try{
     let all_employee = await find_all_employee(page, dpp)
     res.send({all_employee: all_employee})
@@ -109,7 +115,7 @@ router.post('/newemployee', authorize, async (req, res) => {
  
  router.get('/pendingemployee', authorize, async(req,res) =>{
     let page = !req.query.page ? 1 : Number(req.query.page);
-    let dpp = !req.query.dpp ? 20 : Number(req.query.dpp);
+    let dpp = !req.query.dpp ? 10 : Number(req.query.dpp);
     try{
     let pending_employee = await find_pending_employee(page, dpp)
     res.send({pending_employee: pending_employee})
@@ -143,7 +149,24 @@ router.get('/pendingemployee/:id', authorize, async(req,res) => {
     try{
         if(response.valid.length!=0){
             vldress = await Employee.insertMany(response.valid)
-            console.log(vldress)
+            
+            let mul_mail = []
+            vldress.forEach((ob)=>{
+                let msg = {}
+                msg.to = ob.email
+                msg.from = 'shwetakale144@gmail.com'
+                msg.subject = 'Offer Letter for joining'
+                msg.html = offerHtml(ob)
+                mul_mail.push(msg)
+            })
+
+            sgMail.send(mul_mail).then(() => {
+                console.log('emails sent successfully!');
+            }).catch(error => {
+                console.log(error);
+            });
+
+            //console.log(vldress)
         }
         if(response.invalid.length!=0)
             unvldress = await PendingEmployee.insertMany(response.invalid)
