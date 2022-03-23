@@ -141,8 +141,10 @@ router.get('/pendingemployee/:id', authorize, async(req,res) => {
     let vldress = [], unvldress = []
     
     try{
-        if(response.valid.length!=0)
+        if(response.valid.length!=0){
             vldress = await Employee.insertMany(response.valid)
+            console.log(vldress)
+        }
         if(response.invalid.length!=0)
             unvldress = await PendingEmployee.insertMany(response.invalid)
     

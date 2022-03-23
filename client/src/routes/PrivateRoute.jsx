@@ -21,9 +21,11 @@ import { connect } from "react-redux";
               console.log(tokenRes);
               if (status !== 200) {
                 navigate("/signin");
+                localStorage.removeItem("auth_token");
               }
             } else {
               navigate("/signin");
+              localStorage.removeItem("auth_token");
             }
             
             setLoading(false);

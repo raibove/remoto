@@ -114,9 +114,20 @@ router.post('/register', async (req, res) => {
 })
 
  router.get('/verify_token', authorize, async(req,res)=>{
-    console.log(req.query.token)
-    res.send("verified")
+    console.log(req.user)
+    try{
+        const is_user = await User.findById(req.user._id)
+        console.log(is_user)
+        if(!is_user){
+            throw "User Not Exist";
+        }
+        res.send("verified")
+    }catch(e){
+        res.status(400).send({message: "Token not verified"})
+    }
  })
+
+ 
 /*
  router.put('/reset_password', async(req,res)=>{
      try{
