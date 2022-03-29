@@ -11,13 +11,12 @@ const PublicRoute = ()=> {
           const token = localStorage.getItem("auth_token");
           const id = localStorage.getItem("id");
           const role = localStorage.getItem("role")
-          console.log(role)
-         if (token) {
-           if(role=="employee"){
-             navigate(`/dashboard/${id}`)
-           } else{
-           navigate("/dashboard");
-           }
+          if (token) {
+            if(role=="employee"){
+              navigate(`/dashboard/${id}`)
+            } else{
+              navigate("/dashboard");
+            }
           }
           setLoading(false);
         } catch (e) {

@@ -35,7 +35,6 @@ export const signup = (data) => async (dispatch) => {
 
       if(res.data.role==="employee"){
       window.location.href="/dashboard/"+res.data._id
-
       }else{
       window.location.href="/dashboard"
       }

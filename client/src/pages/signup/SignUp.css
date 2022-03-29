@@ -70,6 +70,10 @@
     width: 130px;
 }
 
+.signupInput.ant-select-single{
+    width:170px;
+    padding: 10px 2px;
+}
 @media (max-width: 650px){
     .signup-left{
         display: none;

@@ -83,9 +83,16 @@ const App = (props)=>{
             <Route path="/new-employee" element={<NewEmployee/>} exact/>
           </Route>
           :
-          <Route element={<PrivateRoute/>}>
-            <Route path="/dashboard/:id" element={<UserDashboard/>} exact />             
-          </Route>
+          <>
+            {role === "it"?
+              <>
+              </>
+              :
+              <Route element={<PrivateRoute/>}>
+                <Route path="/dashboard/:id" element={<UserDashboard/>} exact />             
+              </Route>
+            }
+          </>
           }
           <Route path="*" element={<E404/>} />
         </Routes>
