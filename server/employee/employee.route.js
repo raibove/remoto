@@ -33,11 +33,11 @@ const offerHtml = (emp)=>{
          <br/>
          As per our discussion we’d like to offer you an annual starting salary of $60,000 paid out on your account.
         <br/>
-        If you decide to accept this role, your anticipated start date will be ${emp.doj} 
+        If you decide to accept this role, your anticipated start date will be ${handleDateChange(emp.doj)} 
          <br/><br/>
          As an employee of Company ABC, you will also have access to our comprehensive benefits program, 
          which includes unlimited vacation days, health insurance, RRSPs and tuition reimbursement.
-         To accept this offer, please add your signatur <a href="http://localhost:3000/letter/${emp._id}">here</a> by ${emp.doj}, and I will get you started with the rest of the onboarding process.
+         To accept this offer, please add your signature <a href="http://localhost:3000/letter/${emp._id}">here</a> by ${emp.doj}, and I will get you started with the rest of the onboarding process.
         <br/><br/>
         We are excited about the possibility of you joining Company ABC! <br/>
         If you have any questions, please contact me directly via phone or email.  
@@ -46,6 +46,17 @@ const offerHtml = (emp)=>{
         Hiring Manager,
         </p>
     `
+}
+
+
+const handleDateChange=(value)=>{
+    if(value==null || value==undefined)
+    return ""
+    const tt = new Date(value*1000)
+    let date = tt.getDate()
+    let month = tt.getMonth()+1
+    let yr = tt.getFullYear()
+    return date+"/"+month+"/"+yr
 }
 
 router.post('/newemployee', authorize, async (req, res) => {

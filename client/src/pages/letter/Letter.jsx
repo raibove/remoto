@@ -58,19 +58,17 @@ const Letter = (props)=>{
     },[props.newjoinee])
 
     const timeConverter = (timeStamp)=>{
-        if(timeConverter==null || timeConverter==undefined)
+        if(timeStamp==null || timeStamp==undefined)
             return ""
-       // console.log(timeStamp)
-        const tt = new Date(timeStamp)
-        let date = tt.getUTCDate()
-        let month = tt.getUTCMonth()
-        let yr = tt.getUTCFullYear()
+        const tt = new Date(timeStamp*1000)
+        let date = tt.getDate()
+        let month = tt.getMonth()+1
+        let yr = tt.getFullYear()
         return date+"/"+month+"/"+yr
     }
-
+    
     const saveLetter =async ()=>{
       setSaveLoading(true)
-//      console.log(nName)
       if(nName.toLowerCase() != newJoinee.name.toLowerCase()){
         openNotification({message:"Name not same as official"})
       }else{

@@ -241,23 +241,32 @@ router.put('/update',authorize, async (req, res)=>{
         res.send(emp)
         */
             (async function(){
-                    const emp = await Employee.findOneAndUpdate({email: user.email}, {panURL: req.body.panURL, adharURL: req.body.adharURL, panNo:req.body.panNo, adharNo: req.body.adharNo})
-                    console.log(req.body.panNo)
+                    let adharV, panV,adharVerified=false, panVerified=false;
                     if(req.body.panNo != undefined && req.body.panNo!='')
                     {
-                        const panV = await verifyPan(req.body.panNo);
+                        panV = await verifyPan(req.body.panNo);
                         console.log(panV.data)
                    }
                    if(req.body.adharNo != undefined && req.body.adharNo!='')
                    {
-                       const adharV = await verifyAdhar(req.body.adharNo);
+                       adharV = await verifyAdhar(req.body.adharNo);
                        console.log(adharV.data)
                   }
-                  
-                    if(!emp){
-                        throw "Employee not found"
-                    }
-                    res.send(emp)
+                  if(adharV!=undefined && adharV.data!=undefined && adharV.data=="documents found!"){
+                    adharVerified=true
+                    console.log("adhat v")
+                  }
+
+                  if(panV!=undefined && panV.data!=undefined && panV.data==="documents found!"){
+                    panVerified = true
+                    console.log("pan v")
+                  }
+                  const emp = await Employee.findOneAndUpdate({email: user.email}, {panURL: req.body.panURL, adharURL: req.body.adharURL, panNo:req.body.panNo, adharNo: req.body.adharNo, adharVerified: adharVerified, panVerified: panVerified})
+
+                if(!emp){
+                    throw "Employee not found"
+                }
+                res.send(emp)
             }());
 
         }

@@ -52,6 +52,14 @@ const employee_schema = new Schema(
         },
         panNo:{
             type: String
+        },
+        panVerified:{
+            type:Boolean,
+            default:false
+        },
+        adharVerified:{
+            type:Boolean,
+            default:false
         }
     },
     {
