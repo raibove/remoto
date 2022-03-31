@@ -2,9 +2,10 @@ import React, {useEffect, useState} from "react"
 import SideBar from "../../components/sidebar/SideBar"
 import {Table, Tag, Upload, Tabs, message, notification,Button} from "antd";
 import {Link} from "react-router-dom"
-import { signup, getAllEmployee, getPendingEmployee, generateCSV } from "../../redux/actions/userAction";
+import { signup, getAllEmployee, getPendingEmployee, generateCSV, createMAccount } from "../../redux/actions/userAction";
 import { connect } from "react-redux"
 import store from "../../redux/store";
+import mButton from "../../assets/img/ms-signin.png"
 import xlsx from "xlsx"
 import "./Account.css"
 
@@ -15,8 +16,17 @@ const Account = (props)=>{
     }
     return(
         <>
+        <script src="https://alcdn.msauth.net/browser/2.1.0/js/msal-browser.min.js"
+            integrity="sha384-EmYPwkfj+VVmL1brMS1h6jUztl4QMS8Qq8xlZNgIT/luzg7MAzDVrRa2JxbNmk/e"
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@microsoft/microsoft-graph-client/lib/graph-js-sdk.js"></script>
+        
         <SideBar/>
         <div className="account-microsoft-container">
+            <Button onClick={()=>{createMAccount()}}>Microsoft</Button>
+            <div onClick={()=>{createMAccount()}}>
+                <img src={mButton} alt="Signin with Microsoft"/>
+            </div>
             <Button type="primary" className="account-microsoft-add" onClick={()=>{createCSV()}}>
                 Create CSV
             </Button>
@@ -51,7 +61,8 @@ const mapActionWithProps = {
     signup,
     getAllEmployee,
     getPendingEmployee,
-    generateCSV
+    generateCSV,
+    createMAccount
   };
   
   const mapPropsWithState = (state) => ({

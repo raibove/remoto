@@ -261,7 +261,11 @@ router.put('/update',authorize, async (req, res)=>{
                     panVerified = true
                     console.log("pan v")
                   }
-                  const emp = await Employee.findOneAndUpdate({email: user.email}, {panURL: req.body.panURL, adharURL: req.body.adharURL, panNo:req.body.panNo, adharNo: req.body.adharNo, adharVerified: adharVerified, panVerified: panVerified})
+                  let status = "Offer Accepted"
+                  if(panVerified && adharVerified){
+                      status = "Documents Verified"
+                  }
+                  const emp = await Employee.findOneAndUpdate({email: user.email}, {panURL: req.body.panURL, adharURL: req.body.adharURL, panNo:req.body.panNo, adharNo: req.body.adharNo, adharVerified: adharVerified, panVerified: panVerified, status: status})
 
                 if(!emp){
                     throw "Employee not found"

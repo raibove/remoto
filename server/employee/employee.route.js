@@ -1,6 +1,6 @@
 import express, { request } from "express"
 import { authorize, is_admin } from "../auth/auth.middleware.js";
-
+import {getToken, signIn} from "../auth/auth.microsoft.js";
 import { Employee, PendingEmployee } from "./employee.model.js";
 import {employeeValidation, multipleemployeeValidation, mevalidation} from "../helpers/schemas.js"
 import { find_all_employee, find_pending_employee } from "./employee.service.js";
@@ -13,6 +13,8 @@ import multer from 'multer';
 import {spawn} from "child_process";
 import fileSystem from "fs";
 import fastcsv from "fast-csv";
+import "isomorphic-fetch";
+import MicrosoftGraph from "@microsoft/microsoft-graph-client";
 const unlinkFile = util.promisify(fs.unlink)
 const upload = multer({ dest: 'uploads/' })
 
@@ -238,7 +240,6 @@ router.post('/images', authorize, upload.single('image'), async (req, res) => {
             const details = JSON.stringify((data.toString()).split(/\r?\n/))
 	        console.log(details)
             //data.imagePath = result.Location
-            //console.log(data)
             res.send(details);
         });
     }else{
@@ -299,20 +300,36 @@ router.get('/getcsv', authorize, async (req,res)=>{
         res.status(400).send({message:e})
     }
 })
-        /*
-        var csv = 'ID,Name,Email,Password\n';  
-          
-        data.forEach(function(row){  
-                csv += row["_id"] + "," + row["name"] + "," + row["email"] + "," + row["password"];
-                csv += "\n";  
-        });  
-        var hiddenElement = document.createElement('a');  
-        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);  
-        hiddenElement.target = '_blank';  
-              
-        //provide the name for the CSV file to be downloaded  
-        hiddenElement.download = 'Famous Personalities.csv';  
-        hiddenElement.click(); 
-            */
-//router.get('/stats', authorize, )
+
+router.get('/createa', authorize, async(req,res)=>{
+    const authProvider = {
+        getAccessToken: async () => {
+            // Call getToken in auth.js
+            let token = await getToken();
+            console.log("TOKENNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN IS " + token);
+            return token;
+        }
+    };
+
+    const graphClient = MicrosoftGraph.Client.initWithMiddleware({ authProvider });
+
+    const user = {
+        accountEnabled: true,
+        displayName: 'Testi Pii',
+        mailNickname: 'PieTest',
+        userPrincipalName: 'testi@EmployeeOnboarding778.onmicrosoft.com',
+        passwordProfile: {
+          forceChangePasswordNextSignIn: true,
+          password: 'xWwvJ]6NMw+bWH-d'
+        }
+    };
+
+    //await signIn();
+    ensureScope('user.readwrite.all');
+    console.log("signed in")
+    let r = await graphClient.api('/users').post(user);
+    console.log(r)
+      
+})
+
  export default router

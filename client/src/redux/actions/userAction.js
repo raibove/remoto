@@ -1,5 +1,6 @@
 import axios from "axios";
 import api from "../../shared/api"
+//import msal from "@azure/msal-browser";
 const baseURL = process.env.REACT_APP_BACKEND_URL;
 
 
@@ -194,5 +195,45 @@ export const registerUser = (id, data)=> async(dispatch)=>{
     console.log(err)
     dispatch({type:"SET_ALERT", payload: {message:err.response}})
   
+  }
+}
+
+
+/**
+ * 
+ * 
+ * Microsoft 
+ 
+ const msalConfig = {
+  auth: {
+      clientId: 'db29c5ec-6b88-4ce8-b1a4-0c1a6dc4ed05',
+      // comment out if you use a multi-tenant AAD app
+      authority: 'https://login.microsoftonline.com/common',
+      redirectUri: 'http://localhost:8080'
+  }
+};
+const msalRequest = { scopes: [] };
+function ensureScope (scope) {
+  if (!msalRequest.scopes.some((s) => s.toLowerCase() === scope.toLowerCase())) {
+      msalRequest.scopes.push(scope);
+  }
+}
+//Initialize MSAL client
+const msalClient = new msal.PublicClientApplication(msalConfig);
+async function signIn() {
+  const authResult = await msalClient.loginPopup(msalRequest);
+ 
+  sessionStorage.setItem('msalAccount', authResult.account.username);
+}
+*/
+export const createMAccount = ()=> async(dispatch)=>{
+  try{
+
+    //await signIn()
+    let res = await axios.get(`${baseURL}/users/createa`)
+    console.log(res)
+  }catch(err){
+    console.log(err)
+    dispatch({type:"SET_ALERT", payload: {message:err.response}})
   }
 }
