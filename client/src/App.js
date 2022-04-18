@@ -8,6 +8,7 @@ import Landing from "./pages/landing/Landing";
 import E404 from "./pages/error/E404";
 import Dashboard from "./pages/dashboard/Dashboard"
 import UserDashboard from "./pages/employeeDashboard/Dashboard"
+import ItDashboard from "./pages/it/Dashboard"
 import NewEmployee from "./pages/employee/NewEmployee"
 import EditEmployee from "./pages/employee/EditEmployee"
 import Employee from "./pages/employee/Employee"
@@ -83,9 +84,19 @@ const App = (props)=>{
             <Route path="/new-employee" element={<NewEmployee/>} exact/>
           </Route>
           :
-          <Route element={<PrivateRoute/>}>
-            <Route path="/dashboard/:id" element={<UserDashboard/>} exact />             
-          </Route>
+          <>
+            {role === "it"?
+              <>
+                <Route element={<PrivateRoute/>}>
+                  <Route path="/dashboard" element={<ItDashboard/>} exact />             
+                </Route>
+              </>
+              :
+              <Route element={<PrivateRoute/>}>
+                <Route path="/dashboard/:id" element={<UserDashboard/>} exact />             
+              </Route>
+            }
+          </>
           }
           <Route path="*" element={<E404/>} />
         </Routes>

@@ -9,12 +9,13 @@ import "./Employee.css"
 import {useParams} from "react-router-dom"
 
 const {Column} = Table
-
+const {TextArea} = Input
 const EditEmployee = (props)=>{
     const [empName, setEmpName] = useState("");
     const [empMail, setEmpMail] = useState("")
     const [empRole, setEmpRole] = useState("")
     const [empDoj, setEmpDoj] = useState("") 
+    const [empAddress, setEmpAddress] = useState("");
     const [empLoading, setEmpLoading] = useState(false)
     let params = useParams();
 
@@ -24,7 +25,8 @@ const EditEmployee = (props)=>{
         name: empName,
         email: empMail,
         doj: empDoj,
-        career: empRole
+        address: empAddress,
+        career: empRole,
       }
       console.log(data)
       try{
@@ -79,7 +81,10 @@ const EditEmployee = (props)=>{
             setEmpMail(re.email)
             if(re.career!=undefined)
             setEmpRole(re.career)
+            if(re.address!=undefined)
+            setEmpAddress(re.address)
            }
+
         }
     },[props.single_pending_employee])
 
@@ -106,6 +111,12 @@ const EditEmployee = (props)=>{
             <Input className="new-employee-input" value={empRole} onChange={(e)=>{
               setEmpRole(e.target.value)
             }} size="large" placeholder="enter role name" />
+          </div>
+          <div className="new-employee-title">
+            <h3>Address</h3>
+            <TextArea rows={4} placeholder="Enter address" onChange={(e)=> {
+              setEmpAddress(e.target.value)
+            }}/>
           </div>
           <div className="new-employee-title">
             <h3>Date of Joining</h3>

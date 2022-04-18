@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import { Link, NavLink } from "react-router-dom";
 import Logo from "../../assets/img/logo.png";
 import SignUpImage from "../../assets/img/signupImage.svg";
-import {Button, Input, notification} from 'antd';
+import {Button, Input, notification, Select} from 'antd';
 import { GoogleOutlined } from '@ant-design/icons';
 
 import { signup, signupphone } from "../../redux/actions/userAction";
@@ -10,20 +10,21 @@ import { connect } from "react-redux";
 import store from "../../redux/store";
 
 import "./SignUp.css"
-
+const { Option } = Select;
 const SignUp = (props)=>{
 
     const [name,setName] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [loading, setLoading] = useState(false)
-    
+    const [role, setRole] = useState("admin");
+
   const signUpMail = async () => {
     setLoading(true);
     try {
       const data = {
         name: name,
-        role: "admin",
+        role: role,
         email: email,
         password: password,
         //phone: "4454"
@@ -114,6 +115,13 @@ const SignUp = (props)=>{
                   }
                 }}
               />
+              <Select defaultValue="admin" className="signupInput" onChange={(value)=>{
+                setRole(value)
+              }}>
+                <Option value="trainer">Training Partner</Option>
+                <Option value="it">IT Team</Option>
+                <Option value="admin">Admin</Option>
+              </Select>
               <Button className="signupButton" type="primary" loading={loading} onClick={signUpMail}>Create an Account</Button>
               <Link to="/signin">
                   <p>Already a user? Click here to login.</p>

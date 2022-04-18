@@ -114,9 +114,20 @@ router.post('/register', async (req, res) => {
 })
 
  router.get('/verify_token', authorize, async(req,res)=>{
-    console.log(req.query.token)
-    res.send("verified")
+    console.log(req.user)
+    try{
+        const is_user = await User.findById(req.user._id)
+        console.log(is_user)
+        if(!is_user){
+            throw "User Not Exist";
+        }
+        res.send("verified")
+    }catch(e){
+        res.status(400).send({message: "Token not verified"})
+    }
  })
+
+ 
 /*
  router.put('/reset_password', async(req,res)=>{
      try{
@@ -230,23 +241,36 @@ router.put('/update',authorize, async (req, res)=>{
         res.send(emp)
         */
             (async function(){
-                    const emp = await Employee.findOneAndUpdate({email: user.email}, {panURL: req.body.panURL, adharURL: req.body.adharURL, panNo:req.body.panNo, adharNo: req.body.adharNo})
-                    console.log(req.body.panNo)
+                    let adharV, panV,adharVerified=false, panVerified=false;
                     if(req.body.panNo != undefined && req.body.panNo!='')
                     {
-                        const panV = await verifyPan(req.body.panNo);
+                        panV = await verifyPan(req.body.panNo);
                         console.log(panV.data)
                    }
                    if(req.body.adharNo != undefined && req.body.adharNo!='')
                    {
-                       const adharV = await verifyAdhar(req.body.adharNo);
+                       adharV = await verifyAdhar(req.body.adharNo);
                        console.log(adharV.data)
                   }
-                  
-                    if(!emp){
-                        throw "Employee not found"
-                    }
-                    res.send(emp)
+                  if(adharV!=undefined && adharV.data!=undefined && adharV.data=="documents found!"){
+                    adharVerified=true
+                    console.log("adhat v")
+                  }
+
+                  if(panV!=undefined && panV.data!=undefined && panV.data==="documents found!"){
+                    panVerified = true
+                    console.log("pan v")
+                  }
+                  let status = "Offer Accepted"
+                  if(panVerified && adharVerified){
+                      status = "Documents Verified"
+                  }
+                  const emp = await Employee.findOneAndUpdate({email: user.email}, {panURL: req.body.panURL, adharURL: req.body.adharURL, panNo:req.body.panNo, adharNo: req.body.adharNo, adharVerified: adharVerified, panVerified: panVerified, status: status})
+
+                if(!emp){
+                    throw "Employee not found"
+                }
+                res.send(emp)
             }());
 
         }

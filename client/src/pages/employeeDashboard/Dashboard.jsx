@@ -21,6 +21,8 @@ const UserDashboard = (props)=>{
   const [fileUploading, setFileUploading] = useState(false)
   const [saveDisabled, setSaveDisabled] = useState(false)
   const [saveLoading, setSaveLoading] = useState(false)
+  const [adharVerified, setAdharVerified] = useState(false)
+  const [panVerified, setPanVerified] = useState(false)
 
   const params = useParams();
   const close = () => {
@@ -62,6 +64,14 @@ useEffect(()=>{
       }
       if(props.employee_info.data.adharNo!= undefined){
         setAdharNo(props.employee_info.data.adharNo)
+      }
+      if(props.employee_info.data.adharVerified!=undefined){
+        console.log("///////")
+        console.log(props.employee_info.data.adharVerified)
+        setAdharVerified(props.employee_info.data.adharVerified)
+      }
+      if(props.employee_info.data.panVerified!=undefined){
+        setPanVerified(props.employee_info.data.panVerified)
       }
     }
   }
@@ -147,31 +157,56 @@ return(
         <div className="empcontainer">
           <div className="doc">
             <p>Aadhar Card: </p>
+            {adharURL===""?
+            <Tooltip title="No Doc Uploaded">
+              <FolderViewOutlined className="viewDoc" disabled/>
+            </Tooltip>
+            :
             <a href={adharURL} target="_blank">
               <FolderViewOutlined className="viewDoc"/>
             </a>
+            } 
             <Upload {...fileProps}>
               <Button loading={fileUploading} onClick={()=>{setType("adhar")}}>
                 Upload Aadhar
               </Button>
             </Upload>
-            <Tooltip title=" Document Verified">
-            <CheckSquareOutlined className="doc-verified"/>
-            </Tooltip>
+            {adharVerified==false?
+              <Tooltip title=" Document Unverified">
+               <CloseSquareOutlined className="doc-unverified"/>
+              </Tooltip>
+              :
+              <Tooltip title=" Document Verified">
+                <CheckSquareOutlined className="doc-verified"/>
+              </Tooltip>
+            }
           </div>
           <div className="doc">
             <p>Pan Card: </p>
-            <a href={panURL} target="_blank">
-              <FolderViewOutlined className="viewDoc"/>
-            </a>
+            {panURL===""?
+              <Tooltip title="No Doc Uploaded">
+                <FolderViewOutlined className="viewDoc" disabled/>
+              </Tooltip>
+              :
+              <a href={panURL} target="_blank">
+                <FolderViewOutlined className="viewDoc"/>
+              </a>
+            }
             <Upload {...fileProps}>
               <Button  loading={fileUploading} onClick={()=>{setType("pan")}}>
                 Upload Pan Card
               </Button>
             </Upload>
-            <Tooltip title=" Document Unverified">
-            <CloseSquareOutlined className="doc-unverified"/>
-            </Tooltip>
+            {
+              panVerified===false?
+              <Tooltip title=" Document Unverified">
+                <CloseSquareOutlined className="doc-unverified"/>
+              </Tooltip>
+              :
+              <Tooltip title=" Document Verified">
+               <CheckSquareOutlined className="doc-verified"/>
+              </Tooltip>
+            }
           </div>
           <div>
             <Button type="primary" onClick={saveEmployee} disabled={saveDisabled} loading={saveLoading}>Save</Button>
