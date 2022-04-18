@@ -190,7 +190,49 @@ const Siderbar = ({ signout }) => {
     ) : (
       <>
         {role === "it"?
-        <></>
+        <>
+         <>
+          <nav className="sidebar">
+            <ul className="sidebar-nav">
+              <li className="logo">
+                <div className="logo-side-link">
+                  <span className="logo-link-text logo-text">Remoto</span>
+                  <RightCircleTwoTone
+                    twoToneColor="#dd5dfd"
+                    style={{ fontSize: "1.75rem" }}
+                  />
+                </div>
+              </li>
+              {/* DASHBOARD */}
+              <li className="side-item">
+                <NavLink
+                  to={"/dashboard"}
+                  activeClassName="active-side-nav-link"
+                  className="side-link"
+                >
+                  <PieChartTwoTone
+                    twoToneColor="#dd5dfd"
+                    style={{ fontSize: "1.5rem" }}
+                  />
+                  <span className="link-text">Dashboard</span>
+                </NavLink>
+              </li>
+              
+              {/* LOGOUT */}
+              <li
+                className="side-item"
+                style={{ cursor: "pointer" }}
+                onClick={() => signout()}
+              >
+                <span className="side-link">
+                  <LogoutOutlined style={{ fontSize: "1.5rem" }} />
+                  <span className="link-text">SignOut</span>
+                </span>
+              </li>
+            </ul>
+          </nav>
+        </>
+        </>
         :
         <>
         {width > 650 ? (

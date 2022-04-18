@@ -39,7 +39,6 @@ const employee_schema = new Schema(
         },
         accepted:{
             type:Boolean,
-            default:false
         },
         adharURL:{
             type:String
@@ -60,7 +59,16 @@ const employee_schema = new Schema(
         adharVerified:{
             type:Boolean,
             default:false
+        },
+        address:{
+            type:String,
+            required: true,
+        },
+        trainingRequired:{
+            type:Boolean,
+            required: true,
         }
+
     },
     {
         timestamps: true,
@@ -86,8 +94,7 @@ const pending_employee_schema = new Schema(
             default: "Offer Letter Pending"
         },
         accepted:{
-            type:Boolean,
-            default:false
+            type:Boolean
         },
         error_msg:{
             type:String

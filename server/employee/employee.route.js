@@ -3,7 +3,7 @@ import { authorize, is_admin } from "../auth/auth.middleware.js";
 import {getToken, signIn} from "../auth/auth.microsoft.js";
 import { Employee, PendingEmployee } from "./employee.model.js";
 import {employeeValidation, multipleemployeeValidation, mevalidation} from "../helpers/schemas.js"
-import { find_all_employee, find_pending_employee } from "./employee.service.js";
+import { find_all_employee, find_pending_employee, find_it_employee } from "./employee.service.js";
 import { config } from "dotenv";
 import sgMail from '@sendgrid/mail'
 import fs from 'fs';
@@ -39,7 +39,7 @@ const offerHtml = (emp)=>{
          <br/><br/>
          As an employee of Company ABC, you will also have access to our comprehensive benefits program, 
          which includes unlimited vacation days, health insurance, RRSPs and tuition reimbursement.
-         To accept this offer, please add your signature <a href="http://localhost:3000/letter/${emp._id}">here</a> by ${emp.doj}, and I will get you started with the rest of the onboarding process.
+         To accept this offer, please add your signature <a href="http://localhost:3000/letter/${emp._id}">here</a> by ${handleDateChange(emp.doj)}, and I will get you started with the rest of the onboarding process.
         <br/><br/>
         We are excited about the possibility of you joining Company ABC! <br/>
         If you have any questions, please contact me directly via phone or email.  
@@ -50,7 +50,25 @@ const offerHtml = (emp)=>{
     `
 }
 
+const microsoftHtml = (emp)=>{
+    return `
+        <p>Dear ${emp.name},</p>
+        <br/>
+        <p>
+        You have been granted access to our Microsoft Directory. The credentials for the same are shared in this email, you can login the site here by using the following credentials:
 
+        <br/><br/>
+            <b>Account Mail:</b> ${emp.mail}
+            <br/>
+            <b>Password:</b> ${emp.password}
+            <br/>
+        If you have any questions, please contact me directly via phone or email.  
+        <br/><br/>
+        Sincerely,<br/>
+        Hiring Manager,
+        </p>
+    `
+}
 const handleDateChange=(value)=>{
     if(value==null || value==undefined)
     return ""
@@ -63,6 +81,8 @@ const handleDateChange=(value)=>{
 
 router.post('/newemployee', authorize, async (req, res) => {
    // Validate data from req.body
+   console.log(req.body)
+
     const {error} = employeeValidation(req.body)
     if(error){
         let d = {
@@ -82,6 +102,8 @@ router.post('/newemployee', authorize, async (req, res) => {
         password: req.body.password,
         doj: req.body.doj,
         career:req.body.career,
+        address: req.body.address,
+        trainingRequired: req.body.trainingRequired
     })
 
     try{
@@ -301,35 +323,155 @@ router.get('/getcsv', authorize, async (req,res)=>{
     }
 })
 
-router.get('/createa', authorize, async(req,res)=>{
+const msalRequest = { scopes: [] };
+function ensureScope (scope) {
+    if (!msalRequest.scopes.some((s) => s.toLowerCase() === scope.toLowerCase())) {
+        msalRequest.scopes.push(scope);
+    }
+}
+
+router.post('/createa', authorize, async(req,res)=>{
+    
     const authProvider = {
-        getAccessToken: async () => {
-            // Call getToken in auth.js
-            let token = await getToken();
-            console.log("TOKENNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN IS " + token);
-            return token;
-        }
+        getAccessToken: async () => { return req.body.token; }
     };
-
     const graphClient = MicrosoftGraph.Client.initWithMiddleware({ authProvider });
-
-    const user = {
-        accountEnabled: true,
-        displayName: 'Testi Pii',
-        mailNickname: 'PieTest',
-        userPrincipalName: 'testi@EmployeeOnboarding778.onmicrosoft.com',
-        passwordProfile: {
-          forceChangePasswordNextSignIn: true,
-          password: 'xWwvJ]6NMw+bWH-d'
-        }
+    let u = {
+        addLicenses: [
+          {
+            disabledPlans: [],
+            skuId: '3b555118-da6a-4418-894f-7df1e2096870'
+          }
+          
+        ],
+        removeLicenses: []
     };
 
-    //await signIn();
-    ensureScope('user.readwrite.all');
-    console.log("signed in")
-    let r = await graphClient.api('/users').post(user);
-    console.log(r)
-      
+    try{
+        //find employee whose account is not created
+
+        let emp = await Employee.find({status:'Documents Verified'})
+        let mul_mail = []
+
+        // create account of all that employee
+        for(let employee of emp){
+            let user = {
+                accountEnabled: true,
+                displayName: employee.name,
+                mailNickname: employee.name,
+                userPrincipalName: `${employee.name}@EmployeeOnboarding778.onmicrosoft.com`,
+                usageLocation:'US',
+                passwordProfile: {
+                  forceChangePasswordNextSignIn: true,
+                  password: 'xWwvJ]6NMw+bWH-d'
+                }
+            }
+            ensureScope('user.readwrite.all');
+            let r = await graphClient.api('/users').post(user);
+           // console.log(r)
+    
+            // add licence
+            ensureScope('directory.readwrite.all');
+            let g = await graphClient.api(`/users/${employee.name}@EmployeeOnboarding778.onmicrosoft.com/assignLicense`).post(u);
+           // console.log(g)
+            
+            // send mail to them 
+            let ob  = {
+                name:employee.name,
+                email:employee.email,
+                mail: `${employee.name}@EmployeeOnboarding778.onmicrosoft.com`,
+                password: 'xWwvJ]6NMw+bWH-d'
+            }
+            let msg = {}
+            msg.to = employee.email
+            msg.from = 'shwetakale144@gmail.com'
+            msg.subject = 'Password for Microsoft Account'
+            msg.html = microsoftHtml(ob)
+            mul_mail.push(msg)
+
+            // Update status to account created
+            await Employee.findByIdAndUpdate(employee._id, {status:'Account Created'})
+        }   
+
+       if(mul_mail.length!=0){
+            sgMail.send(mul_mail).then(() => {
+                console.log('emails sent successfully!');
+            }).catch(error => {
+                console.log(error);
+            });
+        }
+        /*
+        const user = {
+            accountEnabled: true,
+            displayName: 'Test884 One',
+            mailNickname: 'Test8',
+            userPrincipalName: 'test8@EmployeeOnboarding778.onmicrosoft.com',
+            usageLocation:'US',
+            passwordProfile: {
+              forceChangePasswordNextSignIn: true,
+              password: 'xWwvJ]6NMw+bWH-d'
+            }
+        };
+
+        ensureScope('user.readwrite.all');
+        let r = await graphClient.api('/users').post(user);
+
+        ensureScope('directory.readwrite.all');
+        await graphClient.api('/users/test8@EmployeeOnboarding778.onmicrosoft.com/assignLicense').post(u);
+        */
+        res.send({employee: mul_mail})  
+    }catch(err){
+        console.log(err)
+        res.status(400).send({message:err})
+    }
 })
 
+router.get('/it_employee', authorize, async (req, res)=>{
+    try{
+        let page = !req.query.page ? 1 : Number(req.query.page);
+        let dpp = !req.query.dpp ? 10 : Number(req.query.dpp);
+        //let data = await Employee.find({status:"Account Created"})
+        let it_employee = await find_it_employee(page, dpp);
+
+        res.send({it_employee: it_employee})
+        //console.log(data)
+        //res.send(data)
+    }catch(err){
+        let d = {
+            message: err
+        }
+        res.status(400).send(d)
+    }
+})
+
+router.post('/allocate', authorize, async(req, res)=>{
+    try{
+        let id = req.body.id 
+        let emp = await Employee.findByIdAndUpdate(id, {isAllocated: true})
+        console.log(emp)
+        res.send("Allocated")
+    }catch(err){
+        let d = {
+            message: err
+        }
+        res.status(400).send(d)
+    }
+} )
+
+
+router.post('/reject_user/:id', async(req,res)=>{
+    try{
+    let id = req.body.id 
+        let emp = await Employee.findByIdAndUpdate(id, {accepted: false, status: "Offer Rejected"})
+        console.log(emp)
+        res.send("Rejected")
+    }catch(err){
+        let d = {
+            message: err
+        }
+        res.status(400).send(d)
+    }
+})
+
+    
  export default router

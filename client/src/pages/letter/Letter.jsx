@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react"
-import { getLetter, registerUser} from "../../redux/actions/userAction";
+import { getLetter, registerUser, rejectUser} from "../../redux/actions/userAction";
 import { connect } from "react-redux";
 import {useParams} from "react-router-dom"
 import { Link, NavLink } from "react-router-dom";
@@ -80,9 +80,14 @@ const Letter = (props)=>{
         let r = await props.registerUser(params.id, data)
       }
       setSaveLoading(false)
-
     }
 
+    const rejectLetter = async ()=>{
+      setSaveLoading(true)
+
+      await props.rejectUser(params.id)
+      setSaveLoading(false)
+    }
     return(
      <div>
         {loading===true?
@@ -101,7 +106,10 @@ const Letter = (props)=>{
             <div className="offer-letter-container">
             <h3>Offer Letter signed<br/> To login click <Link to="/signin">here</Link></h3>
           </div>:
-          
+          newJoinee.accepted===false?
+          <div className="offer-letter-container">
+            <h3>You have Rejected the offer, Please contact HR incase of any issue or emergency.</h3>
+          </div>:
           <div className="offer-letter-container">
             <div className="offer-letter">
                 <h1 className="offer-letter-heading">Offer Letter</h1>
@@ -132,7 +140,8 @@ const Letter = (props)=>{
                   }
                 }} 
                 className="offer-req-input" value={nName} onChange={(e)=>{setNName(e.target.value)}} placeholder={newJoinee.name}/>
-              <Button loading={saveLoading} className="letter-save" type="primary" onClick={()=>{saveLetter()}}>Save</Button>
+              <Button loading={saveLoading} className="letter-save" type="primary" onClick={()=>{saveLetter()}}>Accept Offer</Button>
+              <Button loading={saveLoading} className="letter-reject" danger type="primary" onClick={()=>{rejectLetter()}}>Reject Offer</Button>
             </div>
           </div>
           }
@@ -147,6 +156,7 @@ const Letter = (props)=>{
 const mapActionWithProps = {
     getLetter,
     registerUser,
+    rejectUser,
   };
   
   const mapPropsWithState = (state) => ({

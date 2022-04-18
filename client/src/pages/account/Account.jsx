@@ -11,22 +11,51 @@ import "./Account.css"
 
 const Account = (props)=>{
   
+    const [accountLoading, setAccountLoading] = useState(false)
+
+    const close = () => {
+        store.dispatch({ type: "SET_ALERT", payload: { message: null } });
+      };
+      
+        
+      const openNotification = (err) => {
+        notification["error"]({
+          message: "Error in newEmployee",
+          description: err,
+          onClose: close,
+        });
+      };
+    
+      useEffect(() => {
+        if (props.alert_message !== null && props.alert_message!= undefined) {
+          openNotification(props.alert_message);
+         console.log(props.alert_message)
+        }
+      }, [props.alert_message]);
+    
+    
     const createCSV = async ()=>{
         await props.generateCSV();
     }
+
+    const createMicrosoftAccount = async ()=>{
+        setAccountLoading(true)
+        await props.createMAccount();
+        setAccountLoading(false)
+    }
     return(
         <>
-        <script src="https://alcdn.msauth.net/browser/2.1.0/js/msal-browser.min.js"
-            integrity="sha384-EmYPwkfj+VVmL1brMS1h6jUztl4QMS8Qq8xlZNgIT/luzg7MAzDVrRa2JxbNmk/e"
-            crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@microsoft/microsoft-graph-client/lib/graph-js-sdk.js"></script>
-        
         <SideBar/>
         <div className="account-microsoft-container">
-            <Button onClick={()=>{createMAccount()}}>Microsoft</Button>
-            <div onClick={()=>{createMAccount()}}>
-                <img src={mButton} alt="Signin with Microsoft"/>
-            </div>
+            {
+                accountLoading===true? <h2>Creating users Account....</h2>:
+                <div onClick={()=>{createMicrosoftAccount()}}>
+                    <h2>Sign In With Microsoft to create employee accounts</h2>
+                    <img src={mButton} style={{cursor:"pointer"}} alt="Signin with Microsoft"/>
+                </div>
+            }
+            
+            {/*
             <Button type="primary" className="account-microsoft-add" onClick={()=>{createCSV()}}>
                 Create CSV
             </Button>
@@ -50,6 +79,7 @@ const Account = (props)=>{
                 Delete User
             </Button>
             </a>
+            */}
         </div>
         <div>
         </div>

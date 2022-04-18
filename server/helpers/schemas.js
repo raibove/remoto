@@ -27,7 +27,9 @@ export const employeeValidation = data => {
         career: Joi.string().required(),
         accepted: Joi.boolean(),
         status: Joi.string(),
-        doj: Joi.date().required() 
+        doj: Joi.date().required() ,
+        address: Joi.string().required(),
+        trainingRequired: Joi.boolean().required()
     })
     //console.log(employee_schema)
     return employee_schema.validate(data)
@@ -40,7 +42,9 @@ export const multipleemployeeValidation = data=>{
         career: Joi.string().required(),
         accepted: Joi.boolean(),
         status: Joi.string(),
-        doj: Joi.date().required() 
+        doj: Joi.date().required(),
+        address: Joi.string().required(),
+        trainingRequired: Joi.boolean().required()
     })
 
     const multiple_employee_schema = Joi.array().items(employee_schema)
@@ -55,7 +59,9 @@ export const mevalidation = data=>{
         career: Joi.string().required(),
         accepted: Joi.boolean(),
         status: Joi.string(),
-        doj: Joi.date().required() 
+        doj: Joi.date().required(),
+        address: Joi.string().required(),
+        trainingRequired: Joi.boolean().required()
     })
     let vld = []
     let unvld = []

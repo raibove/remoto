@@ -66,6 +66,8 @@ useEffect(()=>{
         setAdharNo(props.employee_info.data.adharNo)
       }
       if(props.employee_info.data.adharVerified!=undefined){
+        console.log("///////")
+        console.log(props.employee_info.data.adharVerified)
         setAdharVerified(props.employee_info.data.adharVerified)
       }
       if(props.employee_info.data.panVerified!=undefined){

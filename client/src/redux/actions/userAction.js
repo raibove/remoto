@@ -1,6 +1,7 @@
 import axios from "axios";
 import api from "../../shared/api"
 //import msal from "@azure/msal-browser";
+import { PublicClientApplication } from "@azure/msal-browser"
 const baseURL = process.env.REACT_APP_BACKEND_URL;
 
 
@@ -194,14 +195,113 @@ export const registerUser = (id, data)=> async(dispatch)=>{
   }catch(err){
     console.log(err)
     dispatch({type:"SET_ALERT", payload: {message:err.response}})
-  
   }
+}
+
+export const rejectUser = (id)=> async(dispatch)=>{
+  try{
+    let res = await axios.post(`${baseURL}/users/reject_user/${id}`, data)
+    console.log(res)
+    await dispatch({
+      type: "SUCCESS_DATA",
+      payload: "Offer Rejected",
+    });
+    await dispatch(getLetter(id))
+  }catch(err){
+    console.log(err)
+    dispatch({type:"SET_ALERT", payload: {message:err.response}})
+  }
+}
+// Microsoft
+function ensureScope (scope) {
+  if (!msalRequest.scopes.some((s) => s.toLowerCase() === scope.toLowerCase())) {
+      msalRequest.scopes.push(scope);
+  }
+}
+
+async function getToken() {
+  let account = sessionStorage.getItem('msalAccount');
+  if (!account) {
+      throw new Error(
+          'User info cleared from session. Please sign out and sign in again.');
+  }
+  try {
+      // First, attempt to get the token silently
+      const silentRequest = {
+          scopes: msalRequest.scopes,
+          account: msalClient.getAccountByUsername(account)
+      };
+
+      const silentResult = await msalClient.acquireTokenSilent(silentRequest);
+      return silentResult.accessToken;
+  } catch (silentError) {
+      // If silent requests fails with InteractionRequiredAuthError,
+      // attempt to get the token interactively
+    //if (silentError instanceof msal.InteractionRequiredAuthError) {  
+      if (silentError) {
+          const interactiveResult = await msalClient.acquireTokenPopup(msalRequest);
+          return interactiveResult.accessToken;
+      } else {
+          throw silentError;
+      }
+  }
+}
+
+
+const msalConfig = {
+  auth: {
+      clientId: 'db29c5ec-6b88-4ce8-b1a4-0c1a6dc4ed05',
+      // comment out if you use a multi-tenant AAD app
+      authority: 'https://login.microsoftonline.com/common',
+      redirectUri: 'http://localhost:3000'
+  }
+};
+
+//Initialize MSAL client
+const msalClient = new PublicClientApplication(msalConfig);
+
+
+const msalRequest = { scopes: [] };
+
+async function signIn() {
+  const authResult = await msalClient.loginPopup(msalRequest);
+  sessionStorage.setItem('msalAccount', authResult.account.username);
 }
 
 export const createMAccount = ()=> async(dispatch)=>{
   try{
-    let res = await axios.get(`${baseURL}/users/createa`)
+    await signIn();
+    let token = await getToken();
+    console.log(token);
+    let res = await axios.post(`${baseURL}/users/createa`,{token: token})
+    // console.log(res)
+    return res
+  }catch(err){
+    console.log(err)
+    dispatch({type:"SET_ALERT", payload: {message:"Account Creation failed"}})
+    return err
+  }
+}
+
+export const getItEmployee = ()=> async(dispatch)=>{
+  try{
+    let res = await axios.get(`${baseURL}/users/it_employee`)
     console.log(res)
+    await dispatch({
+      type: "SET_IT_EMPLOYEE",
+      payload: {it_employee: res.data.it_employee},
+    });
+  }catch(err){
+    console.log(err)
+    dispatch({type:"SET_ALERT", payload: {message:err.response}})
+  }
+}
+
+export const changeAllocation = (id)=> async(dispatch)=>{
+  try{
+    let res = await axios.post(`${baseURL}/users/allocate`, id)
+    console.log(res)
+    
   }catch(err){
     console.log(err)
     dispatch({type:"SET_ALERT", payload: {message:err.response}})
