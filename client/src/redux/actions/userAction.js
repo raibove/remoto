@@ -200,7 +200,7 @@ export const registerUser = (id, data)=> async(dispatch)=>{
 
 export const rejectUser = (id)=> async(dispatch)=>{
   try{
-    let res = await axios.post(`${baseURL}/users/reject_user/${id}`, data)
+    let res = await axios.post(`${baseURL}/users/reject_user/${id}`)
     console.log(res)
     await dispatch({
       type: "SUCCESS_DATA",
