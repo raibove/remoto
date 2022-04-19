@@ -14,7 +14,7 @@ const { Step } = Steps;
 const SingleEmployee = (props)=>{
     const [emp,setEmp] = useState(null)
     const [currentStep, setCurrentStep] = useState(null)
-      
+    const [data, setData] = useState([])
   const columns = [
     {
       title: 'Type',
@@ -43,21 +43,7 @@ const SingleEmployee = (props)=>{
       )
     }
   ]
-
-  const data= [
-    {
-      key:'1',
-      name:'Aadhar Card',
-      link: emp.adharURL,
-      status: emp.adharVerified ===true ? 'Verified' : 'Unverified'
-    },
-    {
-      key:'2',
-      name:'Pan Card',
-      link:emp.panURL,
-      status: emp.panVerified ===true ? 'Verified' : 'Unverified'
-    }
-  ]
+  
     let params = useParams();
     const close = () => {
       store.dispatch({ type: "SET_ALERT", payload: { message: null } });
@@ -110,6 +96,21 @@ const SingleEmployee = (props)=>{
         }else if(res.status=="Offer Accepted"){
           setCurrentStep(0)
         }
+
+        setData([
+          {
+            key:'1',
+            name:'Aadhar Card',
+            link: res.adharURL,
+            status: res.adharVerified ===true ? 'Verified' : 'Unverified'
+          },
+          {
+            key:'2',
+            name:'Pan Card',
+            link:res.panURL,
+            status: res.panVerified ===true ? 'Verified' : 'Unverified'
+          }
+        ])
     }
   }
 
