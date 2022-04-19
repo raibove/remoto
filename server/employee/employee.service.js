@@ -22,3 +22,15 @@ export const find_it_employee = async(page, document_per_page, type)=>{
 
     return it_employee;
 }
+
+export const find_trained_employee = async(page, document_per_page, type)=>{
+    let trained_employee;
+    if(type==="trained")
+    trained_employee = await paginate(Employee, {status:"Account Created", trainingRequired: true, isTrained:true}, page, document_per_page)
+    else if(type==="pending")
+    trained_employee = await paginate(Employee, {status: "Account Created",  trainingRequired: true, isTrained:false}, page, document_per_page)
+    else
+    trained_employee = await paginate(Employee, {status:"Account Created",  trainingRequired: true,}, page, document_per_page)
+
+    return trained_employee;
+}

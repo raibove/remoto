@@ -3,7 +3,7 @@ import { authorize, is_admin } from "../auth/auth.middleware.js";
 import {getToken, signIn} from "../auth/auth.microsoft.js";
 import { Employee, PendingEmployee } from "./employee.model.js";
 import {employeeValidation, multipleemployeeValidation, mevalidation} from "../helpers/schemas.js"
-import { find_all_employee, find_pending_employee, find_it_employee } from "./employee.service.js";
+import { find_all_employee, find_pending_employee, find_it_employee, find_trained_employee } from "./employee.service.js";
 import { config } from "dotenv";
 import sgMail from '@sendgrid/mail'
 import fs from 'fs';
@@ -444,6 +444,26 @@ router.get('/it_employee', authorize, async (req, res)=>{
     }
 })
 
+
+router.get('/trained_employee', authorize, async (req, res)=>{
+    try{
+        let page = !req.query.page ? 1 : Number(req.query.page);
+        let dpp = !req.query.dpp ? 10 : Number(req.query.dpp);
+        //let data = await Employee.find({status:"Account Created"})
+        let trained_employee = await find_trained_employee(page, dpp, req.query.type);
+
+        res.send({trained_employee: trained_employee})
+        //console.log(data)
+        //res.send(data)
+    }catch(err){
+        let d = {
+            message: err
+        }
+        res.status(400).send(d)
+    }
+})
+
+
 router.post('/allocate', authorize, async(req, res)=>{
     try{
         let id = req.body.id 
@@ -459,6 +479,20 @@ router.post('/allocate', authorize, async(req, res)=>{
     }
 } )
 
+router.post('/train', authorize, async(req, res)=>{
+    try{
+        let id = req.body.id 
+        console.log(id)
+        let emp = await Employee.findByIdAndUpdate(id, {isTrained: true})
+        console.log(emp)
+        res.send("Trained")
+    }catch(err){
+        let d = {
+            message: err
+        }
+        res.status(400).send(d)
+    }
+} )
 
 router.post('/reject_user/:id', async(req,res)=>{
     try{
