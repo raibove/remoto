@@ -71,8 +71,10 @@ export const getEmployee = (id)=> async (dispatch)=>{
     const res = await axios.get(`${baseURL}/users/user/${id}`)
     console.log(res)
     dispatch({type:"GET_EMPLOYEE", payload: {employee: res.data.employee}})
+    return res.data.employee
   }catch(err){
     dispatch({type:"SET_ALERT", payload: {message:"Failed to get Employee"}})
+    return null
   }
 }
 

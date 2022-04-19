@@ -71,6 +71,9 @@ const employee_schema = new Schema(
         isAllocated:{
             type:Boolean,
             default:false
+        },
+        isTrained:{
+            type:Boolean
         }
     },
     {
