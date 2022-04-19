@@ -13,7 +13,7 @@ const { Step } = Steps;
 
 const SingleEmployee = (props)=>{
     const [emp,setEmp] = useState(null)
-    
+    const [currentStep, setCurrentStep] = useState(null)
       
   const columns = [
     {
@@ -48,14 +48,14 @@ const SingleEmployee = (props)=>{
     {
       key:'1',
       name:'Aadhar Card',
-      link:'https://documents-be-project.s3.amazonaws.com/2a109d16cdb7b2939374bafbf61293dd.jpeg',
-      status:'Unverified'
+      link: emp.adharURL,
+      status: emp.adharVerified ===true ? 'Verified' : 'Unverified'
     },
     {
       key:'2',
       name:'Pan Card',
-      link:'https://documents-be-project.s3.amazonaws.com/55b795033925eaeac60c6d1b936d8c28.jpeg',
-      status:'Unverified'
+      link:emp.panURL,
+      status: emp.panVerified ===true ? 'Verified' : 'Unverified'
     }
   ]
     let params = useParams();
@@ -81,7 +81,7 @@ const SingleEmployee = (props)=>{
 
   const timeConverter = (timeStamp)=>{
     console.log(timeStamp)
-    const tt = new Date(timeStamp)
+    const tt = new Date(timeStamp*1000)
     let date = tt.getUTCDate()
     let month = tt.getUTCMonth()
     let yr = tt.getUTCFullYear()
@@ -89,15 +89,33 @@ const SingleEmployee = (props)=>{
     return date+"/"+month+"/"+yr
   }
 
+  const getEmp = async()=>{
+    let res = await props.getEmployee(params.id)
+    if(res!=null && res!=undefined){
+      setEmp(res)
+        if(res.isAllocated == true){
+          if(res.trainingRequired == true){
+            if(res.isTrained==true){
+              setCurrentStep(3)
+            }else{
+              setCurrentStep(2)
+            }
+          }else{
+            setCurrentStep(3)
+          }
+        }else if(res.status=="Account Created"){
+          setCurrentStep(2)
+        }else if(res.status=="Documents Verified"){
+          setCurrentStep(1)
+        }else if(res.status=="Offer Accepted"){
+          setCurrentStep(0)
+        }
+    }
+  }
+
   useEffect(()=>{
-      if(props.employee === null){
-          props.getEmployee(params.id)
-      }else{
-          let re = props.employee
-          console.log(re)
-          setEmp(props.employee)
-      }
-  },[props.employee])
+    getEmp();
+  },[])
 
     return(
         <>
@@ -112,11 +130,11 @@ const SingleEmployee = (props)=>{
                 <p>Date of Joining: {timeConverter(emp.doj)}</p>
             </div>
             <div  className="employee-info-container">
-            <Steps>
-                <Step status="finish" title="Offer" description="Offer Accepted & signed."  icon={<UserOutlined />} />
-                <Step status="finish" title="Verification" icon={<SolutionOutlined />} description="Documentations Uploaded & verified."  />
-                <Step status="wait" title="Account" icon={<KeyOutlined />} />
-                <Step status="wait" title="Done" icon={<SmileOutlined />} />
+            <Steps current={currentStep}>
+                <Step  title="Offer" description="Offer Accepted & signed."  icon={<UserOutlined />} />
+                <Step  title="Verification" icon={<SolutionOutlined />} description="Documentations Uploaded & verified."  />
+                <Step  title="Account" icon={<KeyOutlined />} description="Microsoft 365 access granted & gredentials shared on mail"/>
+                <Step  title="Done" icon={<SmileOutlined />} description="Training is completed and Welcome Kit is delivered"/>
             </Steps>
             </div>
             <div className="employee-chat-container">

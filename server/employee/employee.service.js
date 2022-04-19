@@ -11,7 +11,25 @@ export const find_pending_employee = async (page, document_per_page)=>{
     return pending_employee;
 }
 
-export const find_it_employee = async(page, document_per_page)=>{
-    let it_employee = await paginate(Employee, {status:"Account Created"}, page, document_per_page)
+export const find_it_employee = async(page, document_per_page, type)=>{
+    let it_employee;
+    if(type==="allocated")
+        it_employee = await paginate(Employee, {status:"Account Created", isAllocated:true}, page, document_per_page)
+    else if(type==="pending")
+        it_employee = await paginate(Employee, {status: "Account Created", isAllocated:false}, page, document_per_page)
+    else
+        it_employee = await paginate(Employee, {status:"Account Created"}, page, document_per_page)
+
     return it_employee;
+}
+
+export const find_trained_employee = async(page, document_per_page, type)=>{
+    let trained_employee;
+    if(type==="trained")
+    trained_employee = await paginate(Employee, {status:"Account Created", trainingRequired: true, isTrained:true}, page, document_per_page)
+    else if(type==="pending")
+    trained_employee = await paginate(Employee, {status: "Account Created",  trainingRequired: true, isTrained:false}, page, document_per_page)
+    else
+    trained_employee = await paginate(Employee, {status:"Account Created",  trainingRequired: true,}, page, document_per_page)
+    return trained_employee;
 }

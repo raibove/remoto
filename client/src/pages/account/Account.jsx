@@ -12,7 +12,7 @@ import "./Account.css"
 const Account = (props)=>{
   
     const [accountLoading, setAccountLoading] = useState(false)
-
+    const [response, setResponse] = useState(null)
     const close = () => {
         store.dispatch({ type: "SET_ALERT", payload: { message: null } });
       };
@@ -40,7 +40,12 @@ const Account = (props)=>{
 
     const createMicrosoftAccount = async ()=>{
         setAccountLoading(true)
-        await props.createMAccount();
+        setResponse(null)
+        let response = await props.createMAccount();
+        if(response!=undefined && response!=null && response.data!=undefined && response.data.employee!=undefined){
+            console.log(response)
+            setResponse(response.data.employee)
+        }
         setAccountLoading(false)
     }
     return(
@@ -52,34 +57,14 @@ const Account = (props)=>{
                 <div onClick={()=>{createMicrosoftAccount()}}>
                     <h2>Sign In With Microsoft to create employee accounts</h2>
                     <img src={mButton} style={{cursor:"pointer"}} alt="Signin with Microsoft"/>
+                    <br/>
+                    <br/>
+                    <br/>
                 </div>
             }
-            
-            {/*
-            <Button type="primary" className="account-microsoft-add" onClick={()=>{createCSV()}}>
-                Create CSV
-            </Button>
-            <a href="https://admin.microsoft.com/AdminPortal/Home?#/users/:/adduser" target="_blank">
-            <Button type="primary" className="account-microsoft-add">
-                Add a User
-            </Button>
-            </a>
-            <a href="https://admin.microsoft.com/AdminPortal/Home?#/users/:/addmultipleusers" target="_blank">
-            <Button type="primary" className="account-microsoft-add">
-                Add Multiple User
-            </Button>
-            </a>
-            <a href="https://account.activedirectory.windowsazure.com/UserManagement/MultifactorVerification.aspx?BrandContextID=O365" target="_blank">
-            <Button type="primary" className="account-microsoft-add">
-                Add Multifactor Authentication
-            </Button>
-            </a>
-            <a href="https://admin.microsoft.com/AdminPortal/Home?#/users/:/DeleteUser"   target="_blank" >
-            <Button type="primary" className="account-microsoft-add">
-                Delete User
-            </Button>
-            </a>
-            */}
+            {   
+             response && <h1>Account created for {response.length} Users</h1>
+            }
         </div>
         <div>
         </div>

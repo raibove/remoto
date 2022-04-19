@@ -9,6 +9,7 @@ const initialState = {
     single_pending_employee:null,
     employee_info: null,
     it_employee:null,
+    trained_employee:null,
 }
 
 const userReducer = (state=initialState, action) => {
@@ -33,6 +34,8 @@ const userReducer = (state=initialState, action) => {
         return {...state, employee_info: action.payload.employee_info}
         case "SET_IT_EMPLOYEE":
         return {...state, it_employee: action.payload.it_employee}
+        case "SET_TRAINED_EMPLOYEE":
+        return {...state, trained_employee: action.payload.trained_employee}
       default:
       return state;
     }

@@ -3,7 +3,7 @@ import "./Dashboard.css"
 import SideBar from "../../components/sidebar/SideBar"
 import { Button, notification, Tooltip, Spin, Upload, Radio, message, Table, Tag, Col} from "antd";
 import {FolderViewOutlined, CloseSquareOutlined, CheckSquareOutlined} from '@ant-design/icons'
-import { signup, getAllEmployee, updateEmployee, changeAllocation, getEmployeeInfo, getItEmployee } from "../../redux/actions/userAction";
+import { signup, getAllEmployee, updateEmployee, changeTraining, getEmployeeInfo, getTrainedEmployee, rejectCandidate } from "../../redux/actions/userAction";
 import { connect, useDispatch } from "react-redux";
 import store from "../../redux/store";
 const {Column} = Table
@@ -17,38 +17,37 @@ const Dashboard = (props)=>{
     useEffect(()=>{
         setLoading(true)
         //console.log(loading)
-        if(props.it_employee === null)
-            props.getItEmployee(query);
+        if(props.trained_employee === null)
+            props.getTrainedEmployee(query);
         else{
-            console.log(props.it_employee)
-            if(props.it_employee!=null && props.it_employee.documents!=undefined){
-                setData(props.it_employee.documents)
-                console.log(props.it_employee.documents)
-            }else if(props.it_employee!=null){
+            console.log(props.trained_employee)
+            if(props.trained_employee!=null && props.trained_employee.documents!=undefined){
+                setData(props.trained_employee.documents)
+                console.log(props.trained_employee.documents)
+            }else if(props.trained_employee!=null){
                 setData(null)
             }
         setLoading(false)
 
         }
-    },[props.it_employee])
+    },[props.trained_employee])
     
     return(
         <div>
             <SideBar/>
             <div className="table-it">
-                <Radio.Group defaultValue="all" size="medium" className="it-button" buttonStyle="solid" 
+            <Radio.Group defaultValue="all" size="medium" className="it-button" buttonStyle="solid" 
                     onChange={(e)=>{
                         setQuery(e.target.value)
                         dispatch({
-                            type: "SET_IT_EMPLOYEE",
-                            payload: {it_employee: null},
+                            type: "SET_TRAINED_EMPLOYEE",
+                            payload: {trained_employee: null},
                           });
                 }}>
                     <Radio.Button value="all">All</Radio.Button>
                     <Radio.Button value="pending">Pending</Radio.Button>
-                    <Radio.Button value="allocated">Allocated</Radio.Button>
+                    <Radio.Button value="trained">Trained</Radio.Button>
                 </Radio.Group>
-                
                 <Table
                     dataSource={data}
                     loading={loading}
@@ -65,17 +64,18 @@ const Dashboard = (props)=>{
                         key="email"
                     />
                     <Column
-                        title="Address"
-                        dataIndex="address"
-                        key="address"
-                    />
-                    <Column
-                        title="Allocation"
-                        dataIndex="isAllocated"
-                        key="isAllocated"
-                        render={(isAllocated)=>(
-                            isAllocated === true? 
-                            <Tag color="purple">Allocated</Tag>
+                        title="Training Status"
+                        dataIndex="isTrained"
+                        key="isTrained"
+                        render={(isTrained, d)=>(
+                            d.status==="Offer Rejected"?
+                            <>
+                                <Tag color="red">Candidate Rejected</Tag>
+                            </>
+                            :
+
+                            isTrained === true? 
+                            <Tag color="purple">Trained</Tag>
                             :
                             <Tag color="red">Pending</Tag>
                         )
@@ -87,15 +87,36 @@ const Dashboard = (props)=>{
                         dataIndex="_id"
                         render={
                             (_id, d)=>(
-                                d.isAllocated===true?
+                                <>{
+                                d.isTrained===true||d.status=="Offer Rejected"?
                                     <></>
                                 :
                                 <Button type="primary" onClick={()=>{
                                     setLoading(true)
                                     console.log(_id)
-                                    props.changeAllocation(_id)
+                                    props.changeTraining(_id)
+                                    setQuery("all")
+                                    dispatch({
+                                        type: "SET_TRAINED_EMPLOYEE",
+                                        payload: {trained_employee: null},
+                                      });
                                     setLoading(false)
-                                }}>Allocate</Button>
+                                }}>Training Completed</Button>
+                                }
+                                {d.isTrained===false && 
+                                <Button type="primary"danger style={{marginLeft:"20px"}} onClick={()=>{
+                                    setLoading(true)
+                                    console.log(_id)
+                                    props.rejectCandidate(_id)
+                                    setQuery("all")
+                                    dispatch({
+                                        type: "SET_TRAINED_EMPLOYEE",
+                                        payload: {trained_employee: null},
+                                      });
+                                    setLoading(false)
+                                }}>Reject User</Button>
+                                }
+                                </>
                             )
                         }
                     />
@@ -111,16 +132,16 @@ const mapActionWithProps = {
     getAllEmployee,
     updateEmployee,
     getEmployeeInfo,
-    getItEmployee,
-    changeAllocation
+    getTrainedEmployee,
+    changeTraining,
+    rejectCandidate
   };
   
   const mapPropsWithState = (state) => ({
     alert_message: state.user.alert_message,
     success_message: state.user.success_message,
-    all_employee: state.user.all_employee,
-    employee_info: state.user.employee_info,
-    it_employee: state.user.it_employee
+    trained_employee: state.user.trained_employee
+
   });
   
   export default connect(mapPropsWithState, mapActionWithProps)(Dashboard);

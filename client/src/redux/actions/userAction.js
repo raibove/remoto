@@ -71,8 +71,10 @@ export const getEmployee = (id)=> async (dispatch)=>{
     const res = await axios.get(`${baseURL}/users/user/${id}`)
     console.log(res)
     dispatch({type:"GET_EMPLOYEE", payload: {employee: res.data.employee}})
+    return res.data.employee
   }catch(err){
     dispatch({type:"SET_ALERT", payload: {message:"Failed to get Employee"}})
+    return null
   }
 }
 
@@ -200,13 +202,28 @@ export const registerUser = (id, data)=> async(dispatch)=>{
 
 export const rejectUser = (id)=> async(dispatch)=>{
   try{
-    let res = await axios.post(`${baseURL}/users/reject_user/${id}`, data)
+    let res = await axios.post(`${baseURL}/users/reject_user/${id}`)
     console.log(res)
     await dispatch({
       type: "SUCCESS_DATA",
-      payload: "Offer Rejected",
+      payload: "Rejected",
     });
     await dispatch(getLetter(id))
+  }catch(err){
+    console.log(err)
+    dispatch({type:"SET_ALERT", payload: {message:err.response}})
+  }
+}
+
+export const rejectCandidate = (id)=> async(dispatch)=>{
+  try{
+    let res = await axios.post(`${baseURL}/users/reject_candidate/${id}`)
+    console.log(res)
+    await dispatch({
+      type: "SUCCESS_DATA",
+      payload: "Rejected",
+    });
+    //await dispatch(getT(id))
   }catch(err){
     console.log(err)
     dispatch({type:"SET_ALERT", payload: {message:err.response}})
@@ -283,9 +300,9 @@ export const createMAccount = ()=> async(dispatch)=>{
   }
 }
 
-export const getItEmployee = ()=> async(dispatch)=>{
+export const getItEmployee = (type)=> async(dispatch)=>{
   try{
-    let res = await axios.get(`${baseURL}/users/it_employee`)
+    let res = await axios.get(`${baseURL}/users/it_employee?type=${type}`)
     console.log(res)
     await dispatch({
       type: "SET_IT_EMPLOYEE",
@@ -297,11 +314,39 @@ export const getItEmployee = ()=> async(dispatch)=>{
   }
 }
 
+export const getTrainedEmployee = (type)=> async(dispatch)=>{
+  try{
+    let res = await axios.get(`${baseURL}/users/trained_employee?type=${type}`)
+    console.log(res)
+    await dispatch({
+      type: "SET_TRAINED_EMPLOYEE",
+      payload: {trained_employee: res.data.trained_employee},
+    });
+  }catch(err){
+    console.log(err)
+    dispatch({type:"SET_ALERT", payload: {message:err.response}})
+  }
+}
+
 export const changeAllocation = (id)=> async(dispatch)=>{
   try{
-    let res = await axios.post(`${baseURL}/users/allocate`, id)
+    console.log(id)
+    let res = await axios.post(`${baseURL}/users/allocate`, {id: id})
     console.log(res)
-    
+    dispatch(getItEmployee("all"))
+  }catch(err){
+    console.log(err)
+    dispatch({type:"SET_ALERT", payload: {message:err.response}})
+  }
+}
+
+
+export const changeTraining = (id)=> async(dispatch)=>{
+  try{
+    console.log(id)
+    let res = await axios.post(`${baseURL}/users/train`, {id: id})
+    console.log(res)
+    dispatch(getTrainedEmployee("all"))
   }catch(err){
     console.log(err)
     dispatch({type:"SET_ALERT", payload: {message:err.response}})
