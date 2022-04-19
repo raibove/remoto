@@ -31,6 +31,5 @@ export const find_trained_employee = async(page, document_per_page, type)=>{
     trained_employee = await paginate(Employee, {status: "Account Created",  trainingRequired: true, isTrained:false}, page, document_per_page)
     else
     trained_employee = await paginate(Employee, {status:"Account Created",  trainingRequired: true,}, page, document_per_page)
-
     return trained_employee;
 }

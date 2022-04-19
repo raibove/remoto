@@ -73,7 +73,8 @@ const employee_schema = new Schema(
             default:false
         },
         isTrained:{
-            type:Boolean
+            type:Boolean,
+            default:false
         }
     },
     {

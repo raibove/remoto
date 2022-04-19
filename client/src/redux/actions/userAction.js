@@ -206,9 +206,24 @@ export const rejectUser = (id)=> async(dispatch)=>{
     console.log(res)
     await dispatch({
       type: "SUCCESS_DATA",
-      payload: "Offer Rejected",
+      payload: "Rejected",
     });
     await dispatch(getLetter(id))
+  }catch(err){
+    console.log(err)
+    dispatch({type:"SET_ALERT", payload: {message:err.response}})
+  }
+}
+
+export const rejectCandidate = (id)=> async(dispatch)=>{
+  try{
+    let res = await axios.post(`${baseURL}/users/reject_candidate/${id}`)
+    console.log(res)
+    await dispatch({
+      type: "SUCCESS_DATA",
+      payload: "Rejected",
+    });
+    //await dispatch(getT(id))
   }catch(err){
     console.log(err)
     dispatch({type:"SET_ALERT", payload: {message:err.response}})

@@ -3,7 +3,7 @@ import "./Dashboard.css"
 import SideBar from "../../components/sidebar/SideBar"
 import { Button, notification, Tooltip, Spin, Upload, Radio, message, Table, Tag, Col} from "antd";
 import {FolderViewOutlined, CloseSquareOutlined, CheckSquareOutlined} from '@ant-design/icons'
-import { signup, getAllEmployee, updateEmployee, changeTraining, getEmployeeInfo, getTrainedEmployee } from "../../redux/actions/userAction";
+import { signup, getAllEmployee, updateEmployee, changeTraining, getEmployeeInfo, getTrainedEmployee, rejectCandidate } from "../../redux/actions/userAction";
 import { connect, useDispatch } from "react-redux";
 import store from "../../redux/store";
 const {Column} = Table
@@ -67,7 +67,13 @@ const Dashboard = (props)=>{
                         title="Training Status"
                         dataIndex="isTrained"
                         key="isTrained"
-                        render={(isTrained)=>(
+                        render={(isTrained, d)=>(
+                            d.status==="Offer Rejected"?
+                            <>
+                                <Tag color="red">Candidate Rejected</Tag>
+                            </>
+                            :
+
                             isTrained === true? 
                             <Tag color="purple">Trained</Tag>
                             :
@@ -81,7 +87,8 @@ const Dashboard = (props)=>{
                         dataIndex="_id"
                         render={
                             (_id, d)=>(
-                                d.isTrained===true?
+                                <>{
+                                d.isTrained===true||d.status=="Offer Rejected"?
                                     <></>
                                 :
                                 <Button type="primary" onClick={()=>{
@@ -89,8 +96,27 @@ const Dashboard = (props)=>{
                                     console.log(_id)
                                     props.changeTraining(_id)
                                     setQuery("all")
+                                    dispatch({
+                                        type: "SET_TRAINED_EMPLOYEE",
+                                        payload: {trained_employee: null},
+                                      });
                                     setLoading(false)
                                 }}>Training Completed</Button>
+                                }
+                                {d.isTrained===false && 
+                                <Button type="primary"danger style={{marginLeft:"20px"}} onClick={()=>{
+                                    setLoading(true)
+                                    console.log(_id)
+                                    props.rejectCandidate(_id)
+                                    setQuery("all")
+                                    dispatch({
+                                        type: "SET_TRAINED_EMPLOYEE",
+                                        payload: {trained_employee: null},
+                                      });
+                                    setLoading(false)
+                                }}>Reject User</Button>
+                                }
+                                </>
                             )
                         }
                     />
@@ -107,7 +133,8 @@ const mapActionWithProps = {
     updateEmployee,
     getEmployeeInfo,
     getTrainedEmployee,
-    changeTraining
+    changeTraining,
+    rejectCandidate
   };
   
   const mapPropsWithState = (state) => ({

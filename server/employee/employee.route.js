@@ -496,8 +496,22 @@ router.post('/train', authorize, async(req, res)=>{
 
 router.post('/reject_user/:id', async(req,res)=>{
     try{
-    let id = req.body.id 
+    let id = req.params.id 
         let emp = await Employee.findByIdAndUpdate(id, {accepted: false, status: "Offer Rejected"})
+        console.log(emp)
+        res.send("Rejected")
+    }catch(err){
+        let d = {
+            message: err
+        }
+        res.status(400).send(d)
+    }
+})
+
+router.post('/reject_candidate/:id', async(req,res)=>{
+    try{
+    let id = req.params.id 
+        let emp = await Employee.findByIdAndUpdate(id, {status: "Offer Rejected"})
         console.log(emp)
         res.send("Rejected")
     }catch(err){
