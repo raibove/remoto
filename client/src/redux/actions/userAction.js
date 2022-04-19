@@ -283,9 +283,9 @@ export const createMAccount = ()=> async(dispatch)=>{
   }
 }
 
-export const getItEmployee = ()=> async(dispatch)=>{
+export const getItEmployee = (type)=> async(dispatch)=>{
   try{
-    let res = await axios.get(`${baseURL}/users/it_employee`)
+    let res = await axios.get(`${baseURL}/users/it_employee?type=${type}`)
     console.log(res)
     await dispatch({
       type: "SET_IT_EMPLOYEE",
@@ -299,9 +299,10 @@ export const getItEmployee = ()=> async(dispatch)=>{
 
 export const changeAllocation = (id)=> async(dispatch)=>{
   try{
-    let res = await axios.post(`${baseURL}/users/allocate`, id)
+    console.log(id)
+    let res = await axios.post(`${baseURL}/users/allocate`, {id: id})
     console.log(res)
-    
+    dispatch(getItEmployee("all"))
   }catch(err){
     console.log(err)
     dispatch({type:"SET_ALERT", payload: {message:err.response}})

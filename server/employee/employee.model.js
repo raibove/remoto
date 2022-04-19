@@ -67,8 +67,11 @@ const employee_schema = new Schema(
         trainingRequired:{
             type:Boolean,
             required: true,
+        },
+        isAllocated:{
+            type:Boolean,
+            default:false
         }
-
     },
     {
         timestamps: true,

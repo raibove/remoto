@@ -431,7 +431,7 @@ router.get('/it_employee', authorize, async (req, res)=>{
         let page = !req.query.page ? 1 : Number(req.query.page);
         let dpp = !req.query.dpp ? 10 : Number(req.query.dpp);
         //let data = await Employee.find({status:"Account Created"})
-        let it_employee = await find_it_employee(page, dpp);
+        let it_employee = await find_it_employee(page, dpp, req.query.type);
 
         res.send({it_employee: it_employee})
         //console.log(data)
@@ -447,6 +447,7 @@ router.get('/it_employee', authorize, async (req, res)=>{
 router.post('/allocate', authorize, async(req, res)=>{
     try{
         let id = req.body.id 
+        console.log(id)
         let emp = await Employee.findByIdAndUpdate(id, {isAllocated: true})
         console.log(emp)
         res.send("Allocated")
