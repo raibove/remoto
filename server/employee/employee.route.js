@@ -134,7 +134,7 @@ router.post('/newemployee', authorize, async (req, res) => {
 
  router.get('/allemployee', authorize,is_admin, async(req,res) =>{
     let page = !req.query.page ? 1 : Number(req.query.page);
-    let dpp = !req.query.dpp ? 10 : Number(req.query.dpp);
+    let dpp = !req.query.dpp ? 20 : Number(req.query.dpp);
     try{
     let all_employee = await find_all_employee(page, dpp)
     res.send({all_employee: all_employee})
@@ -150,7 +150,7 @@ router.post('/newemployee', authorize, async (req, res) => {
  
  router.get('/pendingemployee', authorize, async(req,res) =>{
     let page = !req.query.page ? 1 : Number(req.query.page);
-    let dpp = !req.query.dpp ? 10 : Number(req.query.dpp);
+    let dpp = !req.query.dpp ? 20 : Number(req.query.dpp);
     try{
     let pending_employee = await find_pending_employee(page, dpp)
     res.send({pending_employee: pending_employee})
@@ -429,7 +429,7 @@ router.post('/createa', authorize, async(req,res)=>{
 router.get('/it_employee', authorize, async (req, res)=>{
     try{
         let page = !req.query.page ? 1 : Number(req.query.page);
-        let dpp = !req.query.dpp ? 10 : Number(req.query.dpp);
+        let dpp = !req.query.dpp ? 20 : Number(req.query.dpp);
         //let data = await Employee.find({status:"Account Created"})
         let it_employee = await find_it_employee(page, dpp, req.query.type);
 
@@ -448,7 +448,7 @@ router.get('/it_employee', authorize, async (req, res)=>{
 router.get('/trained_employee', authorize, async (req, res)=>{
     try{
         let page = !req.query.page ? 1 : Number(req.query.page);
-        let dpp = !req.query.dpp ? 10 : Number(req.query.dpp);
+        let dpp = !req.query.dpp ? 20 : Number(req.query.dpp);
         //let data = await Employee.find({status:"Account Created"})
         let trained_employee = await find_trained_employee(page, dpp, req.query.type);
 
