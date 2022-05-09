@@ -2,8 +2,9 @@ import msal from '@azure/msal-node'
 //MSAL configuration
 const msalConfig = {
     auth: {
-        clientId: 'db29c5ec-6b88-4ce8-b1a4-0c1a6dc4ed05',
+        //clientId: 'db29c5ec-6b88-4ce8-b1a4-0c1a6dc4ed05',
         // comment out if you use a multi-tenant AAD app
+        clientId: '38292dd9-a239-4d5c-aca1-ad0295026966',
         authority: 'https://login.microsoftonline.com/common',
         redirectUri: 'http://localhost:8080'
     }

@@ -359,7 +359,7 @@ router.post('/createa', authorize, async(req,res)=>{
                 accountEnabled: true,
                 displayName: employee.name,
                 mailNickname: employee.name,
-                userPrincipalName: `${employee.name}@EmployeeOnboarding778.onmicrosoft.com`,
+                userPrincipalName: `${employee.name}@remotoBE.onmicrosoft.com`,
                 usageLocation:'US',
                 passwordProfile: {
                   forceChangePasswordNextSignIn: true,
@@ -369,17 +369,17 @@ router.post('/createa', authorize, async(req,res)=>{
             ensureScope('user.readwrite.all');
             let r = await graphClient.api('/users').post(user);
            // console.log(r)
-    
+  
             // add licence
             ensureScope('directory.readwrite.all');
-            let g = await graphClient.api(`/users/${employee.name}@EmployeeOnboarding778.onmicrosoft.com/assignLicense`).post(u);
+            let g = await graphClient.api(`/users/${employee.name}@remotoBE.onmicrosoft.com/assignLicense`).post(u);
            // console.log(g)
             
             // send mail to them 
             let ob  = {
                 name:employee.name,
                 email:employee.email,
-                mail: `${employee.name}@EmployeeOnboarding778.onmicrosoft.com`,
+                mail: `${employee.name}@remotoBE.onmicrosoft.com`,
                 password: 'xWwvJ]6NMw+bWH-d'
             }
             let msg = {}
@@ -405,7 +405,7 @@ router.post('/createa', authorize, async(req,res)=>{
             accountEnabled: true,
             displayName: 'Test884 One',
             mailNickname: 'Test8',
-            userPrincipalName: 'test8@EmployeeOnboarding778.onmicrosoft.com',
+            userPrincipalName: 'test8@remotoBE.onmicrosoft.com',
             usageLocation:'US',
             passwordProfile: {
               forceChangePasswordNextSignIn: true,
@@ -417,7 +417,7 @@ router.post('/createa', authorize, async(req,res)=>{
         let r = await graphClient.api('/users').post(user);
 
         ensureScope('directory.readwrite.all');
-        await graphClient.api('/users/test8@EmployeeOnboarding778.onmicrosoft.com/assignLicense').post(u);
+        await graphClient.api('/users/test8@remotoBE.onmicrosoft.com/assignLicense').post(u);
         */
         res.send({employee: mul_mail})  
     }catch(err){
