@@ -2,19 +2,19 @@ import React, {useEffect, useState} from "react"
 import SideBar from "../../components/sidebar/SideBar"
 import {Table, Spin,Tag, Button, Input, notification, Steps} from "antd";
 
-import { signup, getAllEmployee, addEmployee, getEmployee } from "../../redux/actions/userAction";
+import { signup, getAllEmployee, addEmployee, getEmployee, getEmployeeInfo } from "../../redux/actions/userAction";
 import { connect } from "react-redux";
 import {useParams} from "react-router-dom"
 import store from "../../redux/store";
-import "./Employee.css"
 import { UserOutlined, SolutionOutlined, KeyOutlined, SmileOutlined } from '@ant-design/icons';
 
 const { Step } = Steps;
 
-const SingleEmployee = (props)=>{
+const EmployeeLanding = (props)=>{
     const [emp,setEmp] = useState(null)
     const [currentStep, setCurrentStep] = useState(null)
     const [data, setData] = useState([])
+    const [loading, setLoading] = useState(false)
   const columns = [
     {
       title: 'Type',
@@ -75,10 +75,16 @@ const SingleEmployee = (props)=>{
     return date+"/"+month+"/"+yr
   }
 
-  const getEmp = async()=>{
-    let res = await props.getEmployee(params.id)
-    if(res!=null && res!=undefined){
-      setEmp(res)
+  
+useEffect(()=>{
+    setLoading(true)
+    if(props.employee_info==null){
+      props.getEmployeeInfo(params.id)
+    }else{
+      console.log(props.employee_info)
+      if(props.employee_info.data!=undefined){
+          let res = props.employee_info.data
+        setEmp(res)
         if(res.isAllocated == true){
           if(res.trainingRequired == true){
             if(res.isTrained==true){
@@ -110,13 +116,12 @@ const SingleEmployee = (props)=>{
             link:res.panURL,
             status: res.panVerified ===true ? 'Verified' : 'Unverified'
           }
-        ])
+        ]) 
+      }
     }
-  }
+    setLoading(false)
+  }, [props.employee_info])
 
-  useEffect(()=>{
-    getEmp();
-  },[])
 
     return(
         <>
@@ -158,6 +163,7 @@ const mapActionWithProps = {
     getAllEmployee,
     addEmployee,
     getEmployee,
+    getEmployeeInfo
   };
   
   const mapPropsWithState = (state) => ({
@@ -165,8 +171,8 @@ const mapActionWithProps = {
     success_message: state.user.success_message,
     all_employee: state.user.all_employee,
     employee: state.user.employee,
-
+    employee_info: state.user.employee_info
   });
   
-  export default connect(mapPropsWithState, mapActionWithProps)(SingleEmployee);
+  export default connect(mapPropsWithState, mapActionWithProps)(EmployeeLanding);
   
