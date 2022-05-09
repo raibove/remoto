@@ -22,7 +22,7 @@ l= AWS_URL.split('/')
 fileName = l[-1]
 imgpath = urllib.request.urlretrieve(AWS_URL,fileName)
 ENDPOINT_URL = 'https://vision.googleapis.com/v1/images:annotate'
-api_key = 'AIzaSyCzPvON735JrR-XUBjpaEB7wm3ijJtpn_o'
+api_key = 'AIzaSyCGvdjR7J88bChwlzFB4muKZE2MYPcT23U'
 img_req = None
 details = {
         'name':'',

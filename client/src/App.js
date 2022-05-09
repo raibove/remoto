@@ -8,6 +8,7 @@ import Landing from "./pages/landing/Landing";
 import E404 from "./pages/error/E404";
 import Dashboard from "./pages/dashboard/Dashboard"
 import UserDashboard from "./pages/employeeDashboard/Dashboard"
+import UserLanding from "./pages/employeeLanding/EmployeeLanding"
 import ItDashboard from "./pages/it/Dashboard"
 import TrainerDashboard from "./pages/trainer/Dashboard"
 import NewEmployee from "./pages/employee/NewEmployee"
@@ -103,6 +104,7 @@ const App = (props)=>{
               :
               <Route element={<PrivateRoute/>}>
                 <Route path="/dashboard/:id" element={<UserDashboard/>} exact />             
+                <Route path="/landing/:id" element={<UserLanding/>} exact />             
               </Route>
               }
               </>
