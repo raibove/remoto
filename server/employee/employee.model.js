@@ -79,6 +79,10 @@ const employee_schema = new Schema(
         employeeMessage:{
             type: String,
             default:""
+        },
+         trainingMessage:{
+            type: String,
+            default:""
         }
     },
     {
