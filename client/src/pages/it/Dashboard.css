@@ -6,3 +6,10 @@
 .it-button{
     margin: 25px 25px;
 }
+
+.message-icon{
+    cursor: pointer;
+    font-size: 20px;
+    margin-left: 10px;
+    float: right;
+}

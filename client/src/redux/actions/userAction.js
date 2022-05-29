@@ -36,7 +36,7 @@ export const signup = (data) => async (dispatch) => {
       localStorage.setItem("id", res.data._id)
 
       if(res.data.role==="employee"){
-      window.location.href="/dashboard/"+res.data._id
+      window.location.href="/landing/"+res.data._id
       }else{
       window.location.href="/dashboard"
       }
@@ -341,6 +341,25 @@ export const changeAllocation = (id)=> async(dispatch)=>{
   }
 }
 
+export const addEmployeeMessage = (id, employeeMessage) => async(dispatch)=>{
+  try{
+    let res = await axios.post(`${baseURL}/users/add-message`, {id: id, employeeMessage: employeeMessage})
+    return res
+  }catch(err){
+    console.log(err)
+    dispatch({type:"SET_ALERT", payload: {message:err.response}})
+  }
+}
+
+export const addTrainingMessage = (id, trainingMessage) => async(dispatch)=>{
+  try{
+    let res = await axios.post(`${baseURL}/users/add-train-message`, {id: id, trainingMessage: trainingMessage})
+    return res
+  }catch(err){
+    console.log(err)
+    dispatch({type:"SET_ALERT", payload: {message:err.response}})
+  }
+}
 
 export const changeTraining = (id)=> async(dispatch)=>{
   try{

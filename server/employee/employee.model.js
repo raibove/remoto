@@ -75,6 +75,10 @@ const employee_schema = new Schema(
         isTrained:{
             type:Boolean,
             default:false
+        },
+        employeeMessage:{
+            type: String,
+            default:""
         }
     },
     {

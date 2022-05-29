@@ -1,19 +1,43 @@
 import React, {useEffect, useState} from "react"
 import "./Dashboard.css"
 import SideBar from "../../components/sidebar/SideBar"
-import { Button, notification, Tooltip, Spin, Upload, Radio, message, Table, Tag, Col} from "antd";
-import {FolderViewOutlined, CloseSquareOutlined, CheckSquareOutlined} from '@ant-design/icons'
-import { signup, getAllEmployee, updateEmployee, changeAllocation, getEmployeeInfo, getItEmployee } from "../../redux/actions/userAction";
+import { Button, notification, Modal, Tooltip, Spin, Upload, Input, Radio, message, Table, Tag, Col} from "antd";
+import {FolderViewOutlined, CloseSquareOutlined, CheckSquareOutlined, MessageOutlined} from '@ant-design/icons'
+import { signup, getAllEmployee, updateEmployee, changeAllocation, getEmployeeInfo, getItEmployee, addEmployeeMessage } from "../../redux/actions/userAction";
 import { connect, useDispatch } from "react-redux";
 import store from "../../redux/store";
 const {Column} = Table
-
+const {TextArea} = Input;
 const Dashboard = (props)=>{
     const dispatch = useDispatch()
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [ query, setQuery] = useState("all")
+    const [modalVisible, setModalVisible] = useState(false);
+    const [employeeMessage, setEmployeeMessage] = useState("")
+    const [key, setKey] = useState(0)
+    const [ID, setID] = useState(null)
 
+    const handleSave = async ()=>{
+        setLoading(true)
+        let rr = await props.addEmployeeMessage(ID, employeeMessage);
+        if(rr.data!=undefined && rr.data!=null){
+            console.log(rr.data)
+            props.getItEmployee(query);
+          //  setData(rr.data.documents)
+        }
+        setModalVisible(false)
+        setLoading(false)
+    }
+
+    const handleCancel = ()=>{
+        if(data.employeeMessage != undefined && data.employeeMessage !=null){
+            setEmployeeMessage(data[key].employeeMessage);
+        }else{
+            setEmployeeMessage("");
+        }
+        setModalVisible(false)
+    }
     useEffect(()=>{
         setLoading(true)
         //console.log(loading)
@@ -86,21 +110,34 @@ const Dashboard = (props)=>{
                         key="_id"
                         dataIndex="_id"
                         render={
-                            (_id, d)=>(
-                                d.isAllocated===true?
-                                    <></>
-                                :
-                                <Button type="primary" onClick={()=>{
-                                    setLoading(true)
-                                    console.log(_id)
-                                    props.changeAllocation(_id)
-                                    setLoading(false)
-                                }}>Allocate</Button>
+                            (_id, d, ind)=>(
+                                <>{
+                                    d.isAllocated===true?
+                                        <></>
+                                    :
+                                    <Button type="primary" onClick={()=>{
+                                        setLoading(true)
+                                        console.log(_id)
+                                        props.changeAllocation(_id)
+                                        setLoading(false)
+                                    }}>Allocate</Button>
+                                    
+                                }
+                                <>
+                                <MessageOutlined className="message-icon" onClick={()=>{setModalVisible(true); setKey(ind); setID(_id); setEmployeeMessage(d.employeeMessage!=undefined? d.employeeMessage:"")
+                                }}/>
+                                </></>
                             )
                         }
                     />
                 </Table>
-                
+                <Modal
+                    visible={modalVisible}
+                    onOk={handleSave}
+                    onCancel={handleCancel}
+                >
+                    <TextArea rows={4} value={employeeMessage} onChange={(e)=>{setEmployeeMessage(e.target.value)}}/>
+                </Modal>
             </div>
         </div>
     )
@@ -112,7 +149,8 @@ const mapActionWithProps = {
     updateEmployee,
     getEmployeeInfo,
     getItEmployee,
-    changeAllocation
+    changeAllocation,
+    addEmployeeMessage
   };
   
   const mapPropsWithState = (state) => ({

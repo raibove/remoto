@@ -451,7 +451,6 @@ router.get('/trained_employee', authorize, async (req, res)=>{
         let dpp = !req.query.dpp ? 20 : Number(req.query.dpp);
         //let data = await Employee.find({status:"Account Created"})
         let trained_employee = await find_trained_employee(page, dpp, req.query.type);
-
         res.send({trained_employee: trained_employee})
         //console.log(data)
         //res.send(data)
@@ -478,6 +477,34 @@ router.post('/allocate', authorize, async(req, res)=>{
         res.status(400).send(d)
     }
 } )
+
+router.post('/add-message', authorize, async(req, res)=>{
+    try{
+        let id = req.body.id 
+        await Employee.findByIdAndUpdate(id, {employeeMessage: req.body.employeeMessage})
+        let emp = await find_it_employee(1, 20) 
+        res.send(emp)
+    }catch(err){
+        let d = {
+            message: err
+        }
+        res.status(400).send(d)
+    }
+})
+
+router.post('/add-train-message', authorize, async(req, res)=>{
+    try{
+        let id = req.body.id 
+        await Employee.findByIdAndUpdate(id, {trainingMessage: req.body.trainingMessage})
+        let emp = await find_trained_employee(1, 20) 
+        res.send(emp)
+    }catch(err){
+        let d = {
+            message: err
+        }
+        res.status(400).send(d)
+    }
+})
 
 router.post('/train', authorize, async(req, res)=>{
     try{

@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import {useParams} from "react-router-dom"
 import store from "../../redux/store";
 import { UserOutlined, SolutionOutlined, KeyOutlined, SmileOutlined } from '@ant-design/icons';
-
+import "./EmployeeLanding.css"
 const { Step } = Steps;
 
 const EmployeeLanding = (props)=>{
@@ -147,10 +147,11 @@ useEffect(()=>{
                 <div className="employee-chat">
                  <Table size="medium" columns={columns} dataSource={data} pagination={{position:['none', 'none']}}/>
                 </div>
-               {/* <div className="employee-chat">
-                    
+                <div className="employee-chat">
+                    <p className="it-message"><b>IT Team: </b> {emp.employeeMessage==undefined || emp.employeeMessage==null || emp.employeeMessage==""?<p> No message from IT team</p>: <p>{emp.employeeMessage}</p>}</p>
+                    <p className="it-message"><b>Training Team: </b> {emp.trainingMessage==undefined || emp.trainingMessage==null || emp.trainingMessage==""?<p> No message from Training team</p>: <p>{emp.employeeMessage}</p>}</p>
                 </div>
-              */}
+              
             </div>
         </div>
         }
