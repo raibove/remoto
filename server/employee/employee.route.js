@@ -294,7 +294,7 @@ router.get('/getcsv', authorize, async (req,res)=>{
             var displayName = fullName;
             var usageLocation = "Pune";
             var job = row["career"];
-            var UPN = fName + "_" + lName + "@remoto.onmicrosoft.com";
+            var UPN = fName + "_" + lName + "@remotoBE.onmicrosoft.com";
 
             requiredData.push(
                 {
@@ -355,11 +355,13 @@ router.post('/createa', authorize, async(req,res)=>{
 
         // create account of all that employee
         for(let employee of emp){
+            var names = (employee.name).split(" ")
+            var fName = names[0];
             let user = {
                 accountEnabled: true,
                 displayName: employee.name,
-                mailNickname: employee.name,
-                userPrincipalName: `${employee.name}@remotoBE.onmicrosoft.com`,
+                mailNickname: fName,
+                userPrincipalName: `${fName}@remotoBE.onmicrosoft.com`,
                 usageLocation:'US',
                 passwordProfile: {
                   forceChangePasswordNextSignIn: true,
@@ -372,14 +374,14 @@ router.post('/createa', authorize, async(req,res)=>{
   
             // add licence
             ensureScope('directory.readwrite.all');
-            let g = await graphClient.api(`/users/${employee.name}@remotoBE.onmicrosoft.com/assignLicense`).post(u);
+            let g = await graphClient.api(`/users/${fName}@remotoBE.onmicrosoft.com/assignLicense`).post(u);
            // console.log(g)
             
             // send mail to them 
             let ob  = {
                 name:employee.name,
                 email:employee.email,
-                mail: `${employee.name}@remotoBE.onmicrosoft.com`,
+                mail: `${fName}@remotoBE.onmicrosoft.com`,
                 password: 'xWwvJ]6NMw+bWH-d'
             }
             let msg = {}
