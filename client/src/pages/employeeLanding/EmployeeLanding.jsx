@@ -149,7 +149,7 @@ useEffect(()=>{
                 </div>
                 <div className="employee-chat">
                     <p className="it-message"><b>IT Team: </b> {emp.employeeMessage==undefined || emp.employeeMessage==null || emp.employeeMessage==""?<p> No message from IT team</p>: <p>{emp.employeeMessage}</p>}</p>
-                    <p className="it-message"><b>Training Team: </b> {emp.trainingMessage==undefined || emp.trainingMessage==null || emp.trainingMessage==""?<p> No message from Training team</p>: <p>{emp.employeeMessage}</p>}</p>
+                    <p className="it-message"><b>Training Team: </b> {emp.trainingMessage==undefined || emp.trainingMessage==null || emp.trainingMessage==""?<p> No message from Training team</p>: <p>{emp.trainingMessage}</p>}</p>
                 </div>
               
             </div>
